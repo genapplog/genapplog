@@ -228,7 +228,7 @@
                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </div>
                         <h1 class="text-4xl font-bold text-white mb-3">Bem-vindo ao AppLog</h1>
-                        <p class="text-lg text-slate-400 mb-2 leading-relaxed">Sistema integrado para gestão de padrões de carregamento e geração de etiquetas logísticas.</p>
+                        <p class="text-lg text-slate-400 mb-2 leading-relaxed">Sistema para gestão de processos logísticos.</p>
                         <div id="dash-env-warning" class="hidden mt-4 bg-amber-900/30 border border-amber-600/50 text-amber-200 px-4 py-2 rounded-lg text-sm font-mono">
                             ⚠️ MODO DE TESTE ATIVO
                         </div>
@@ -356,7 +356,7 @@
                                     <span class="bg-indigo-600 text-white p-2 rounded-lg">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                                     </span>
-                                    <h1 class="text-2xl md:text-3xl font-bold text-white">Gerador ZPL</h1>
+                                    <h1 class="text-2xl md:text-3xl font-bold text-white">Gerador Etiqueta Zebra</h1>
                                 </div>
                                 <p class="text-slate-300 max-w-2xl text-sm md:text-base">Gerencie e imprima etiquetas para diferentes marketplaces e transportadoras.</p>
                             </header>
@@ -364,12 +364,10 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <button id="btn-open-amazon" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-8 rounded-2xl flex flex-col items-center text-center group shadow-lg w-full">
                                     <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Etiqueta Amazon</h3>
-                                    <p class="text-slate-300">Gerador de código de barras padrão Fulfillment Center (FBA).</p>
                                 </button>
                                 
                                 <button id="btn-open-manual" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-8 rounded-2xl flex flex-col items-center text-center group shadow-lg w-full">
                                     <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Etiqueta Separação Manual</h3>
-                                    <p class="text-slate-300">Etiqueta 10x8cm para identificação de volumes e transportadora.</p>
                                 </button>
                             </div>
                         </div>
@@ -474,7 +472,7 @@
                                 </span>
                                 <h1 class="text-3xl font-bold text-white">Ocorrências de Estoque</h1>
                             </div>
-                            <p class="text-slate-300 max-w-2xl">Gestão e reporte de divergências de estoque, avarias e problemas de qualidade.</p>
+                            <p class="text-slate-300 max-w-2xl">Gestão e reporte de divergências de estoque.</p>
                         </header>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -493,7 +491,7 @@
                             <div class="p-4 border-b border-slate-700 bg-slate-800/50 flex justify-between items-center">
                                 <h3 class="font-bold text-white flex items-center gap-2">
                                     <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    Relatórios em Andamento (Pendentes)
+                                    Relatórios em Andamento
                                 </h3>
                             </div>
                             <div class="overflow-x-auto">
@@ -742,14 +740,14 @@
                         <div class="max-w-2xl mx-auto">
                             <div class="mb-8"><h2 class="text-2xl font-bold text-white mb-2">Importar Base de Dados</h2></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                                <button id="download-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">Baixar Modelo</button>
-                                <label for="file-upload" class="cursor-pointer px-4 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition shadow-lg">Importar Arquivo<input id="file-upload" type="file" class="hidden" accept=".json"></label>
+                                <button id="download-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">Baixar Modelo Padrão de Carregamento</button>
+                                <label for="file-upload" class="cursor-pointer px-4 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition shadow-lg">Importar Padrão de Carregamento<input id="file-upload" type="file" class="hidden" accept=".json"></label>
                             </div>
                             <div id="import-status" class="hidden p-4 rounded-lg bg-slate-900 border border-slate-700 text-left"><p class="text-sm text-slate-300 font-mono" id="import-status-text"></p></div>
                         </div>
                         <div id="admin-danger-zone" class="mt-12 pt-8 border-t border-slate-700 hidden">
                             <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider mb-4">Área de Perigo (Admin)</h3>
-                            <button id="btn-reset-db" class="px-6 py-2 bg-red-900/50 text-red-200 border border-red-800 rounded-lg font-medium hover:bg-red-900 transition text-sm flex items-center justify-center mx-auto gap-2">Resetar Banco de Dados</button>
+                            <button id="btn-reset-db" class="px-6 py-2 bg-red-900/50 text-red-200 border border-red-800 rounded-lg font-medium hover:bg-red-900 transition text-sm flex items-center justify-center mx-auto gap-2">Resetar Padrão de Carregamento</button>
                             <button id="btn-apply-rules" class="mt-4 px-6 py-2 bg-indigo-900/50 text-indigo-200 border border-indigo-800 rounded-lg font-medium hover:bg-indigo-900 transition text-sm flex items-center justify-center mx-auto gap-2">Aplicar Regras Individuais</button>
                         </div>
                     </div>
@@ -1368,6 +1366,7 @@ safeBind('file-upload', 'change', (e) => {
 </body>
 
 </html>
+
 
 
 
