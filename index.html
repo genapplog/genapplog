@@ -953,7 +953,8 @@
                         document.getElementById('userIdDisplay').innerText = userId;
                         const isAdmin = ADMIN_IDS.includes(userId);
                         updateUIForRole(isAdmin);
-                        setEnvironment('prod');
+                        const savedEnv = localStorage.getItem('appLog_env') || 'prod';
+setEnvironment(savedEnv);
                         
                         // Inicializa coleção de Ocorrências (Sempre Produção)
                         occurrencesCollection = collection(db, PROD_OC_PATH);
@@ -1103,6 +1104,63 @@
         safeBind('btn-cancel-occurrence', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-dash-filter-apply', applyDashboardFilters);
         safeBind('btn-dash-filter-clear', () => { document.getElementById('dash-filter-start').value = ''; document.getElementById('dash-filter-end').value = ''; applyDashboardFilters(); });
+        safeBind('download-template-btn', 'click', () => {
+    // Estrutura exata fornecida
+    const templateData = [
+      {
+        "name": "4 ELOS",
+        "checklist": {
+          "alturaPalete": {
+            "directa": "1.80m",
+            "fracionada": "1.80m"
+          },
+          "multiplosSKU": {
+            "directa": "",
+            "fracionada": "",
+            "directaLimit": "",
+            "fracionadaLimit": ""
+          },
+          "multiplosLotes": {
+            "directa": "",
+            "fracionada": "",
+            "directaLimit": "",
+            "fracionadaLimit": ""
+          },
+          "multiplosPedidos": {
+            "directa": "Não",
+            "fracionada": "Não",
+            "directaLimit": "",
+            "fracionadaLimit": ""
+          },
+          "paletizacaoLastro": {
+            "directa": "",
+            "fracionada": ""
+          },
+          "paletizacaoTorre": {
+            "directa": "",
+            "fracionada": ""
+          },
+          "tipoPalete": {
+            "directa": "PBR",
+            "fracionada": "PBR"
+          },
+          "observacao": {
+            "directa": "",
+            "fracionada": ""
+          }
+        }
+      }
+    ];
+
+    // Cria o arquivo e força o download
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(templateData, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "modelo_importacao_applog.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+});
         
         safeBind('btn-dash-export', 'click', () => {
             if (filteredOccurrencesData.length === 0) { window.showToast("Nenhum dado para exportar.", "error"); return; }
@@ -1155,7 +1213,11 @@
             document.getElementById('client-list-tbody').innerHTML = '<tr><td colspan="2" class="px-6 py-12 text-center text-slate-400"><div class="flex justify-center items-center gap-2"><span class="spinner spinner-dark"></span><span>Carregando ambiente...</span></div></td></tr>';
         }
 
-        safeBind('env-toggle', 'change', (e) => setEnvironment(e.target.checked ? 'test' : 'prod'));
+        safeBind('env-toggle', 'change', (e) => {
+    const newEnv = e.target.checked ? 'test' : 'prod';
+    localStorage.setItem('appLog_env', newEnv); // Salva na memória
+    setEnvironment(newEnv);
+});
         
         async function startDataListener() {
             try {
@@ -1220,5 +1282,6 @@
 </body>
 
 </html>
+
 
 
