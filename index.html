@@ -790,8 +790,11 @@
             navigator.clipboard.writeText(text).then(() => window.showToast("ID copiado!")).catch(() => window.showToast("Erro ao copiar ID", 'error'));
         };
 
-        // Função de Navegação Global
+        // Função de Navegação Global (Com Memória)
         window.clickNavLink = function(target) {
+            // 1. Salva a aba atual na memória do navegador
+            localStorage.setItem('appLog_lastPage', target);
+
             // Esconde todas as páginas
             document.querySelectorAll('.page-content').forEach(p => { 
                 p.classList.remove('active'); 
@@ -899,14 +902,32 @@
         // --- 3. LÓGICA E EVENTOS (AGORA QUE TUDO ESTÁ DEFINIDO) ---
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Bindings do Menu Mobile
             document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
                 document.getElementById('sidebar-content').classList.toggle('hidden');
                 document.getElementById('sidebar-content').classList.toggle('flex');
             });
+            
+            // Bindings dos Links de Navegação
             document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', (e) => { e.preventDefault(); window.clickNavLink(link.dataset.page); });
+                link.addEventListener('click', (e) => { 
+                    e.preventDefault(); 
+                    window.clickNavLink(link.dataset.page); 
+                });
             });
+            
+            // Logo volta para o Dashboard
             document.getElementById('app-logo-btn')?.addEventListener('click', () => window.clickNavLink('dashboard'));
+            
+            // --- NOVA LÓGICA: Recuperar última página acessada ---
+            const lastPage = localStorage.getItem('appLog_lastPage') || 'dashboard';
+            
+            // Verifica se a página salva ainda existe (segurança)
+            if (document.getElementById(lastPage)) {
+                window.clickNavLink(lastPage);
+            } else {
+                window.clickNavLink('dashboard');
+            }
             
             // Inicia App apenas após carregar DOM
             initApp();
@@ -1193,3 +1214,4 @@
 </body>
 
 </html>
+
