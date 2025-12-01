@@ -828,13 +828,14 @@
     <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0"><div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-sm m-4 text-center border border-slate-700 transform scale-95 transition-transform duration-200" id="confirm-modal-panel"><h2 id="confirm-title" class="text-xl font-bold mb-2 text-white">Tem certeza?</h2><p id="confirm-message" class="text-slate-400 mb-6 text-sm"></p><div class="flex justify-center gap-3"><button id="confirm-btn-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 font-medium hover:bg-slate-700 transition w-24">Cancelar</button><button id="confirm-btn-yes" class="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm transition w-24">Confirmar</button></div></div></div>
     <div id="client-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0"><div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-md m-4 border border-slate-700 transform transition-all scale-95"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-white">Novo Cliente</h2><button type="button" id="client-modal-close-x" class="text-slate-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div><form id="client-form"><div class="mb-6"><label for="client-name" class="block text-sm font-medium text-slate-300 mb-1.5">Nome da Empresa</label><input type="text" id="client-name" class="block w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required></div><div class="flex justify-end gap-3 border-t border-slate-700 pt-4"><button type="button" id="client-modal-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 font-medium transition">Cancelar</button><button type="submit" id="client-modal-save" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Criar Cliente</button></div></form></div></div>
 
-   <script type="module">
+  <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, query, getDocs, writeBatch, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- 1. FUNÇÕES GLOBAIS ---
+        // --- 1. FUNÇÕES UTILITÁRIAS GLOBAIS ---
         function safeBind(id, event, handler) { const el = document.getElementById(id); if (el) el.addEventListener(event, handler); }
+        
         window.showToast = (message, type = 'success') => {
             const container = document.getElementById('toast-container'); if (!container) return;
             const toast = document.createElement('div');
@@ -845,7 +846,8 @@
             requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
             setTimeout(() => { toast.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => container.removeChild(toast), 300); }, 3500);
         };
-        window.copyToClipboard = (text) => { navigator.clipboard.writeText(text).then(() => window.showToast("ID copiado!")).catch(() => window.showToast("Erro ao copiar", 'error')); };
+
+        window.copyToClipboard = (text) => { navigator.clipboard.writeText(text).then(() => window.showToast("ID copiado!")).catch(() => window.showToast("Erro ao copiar ID", 'error')); };
         
         window.clickNavLink = function(target) {
             localStorage.setItem('appLog_lastPage', target);
@@ -855,6 +857,7 @@
             const activeLink = document.querySelector(`[data-page="${target}"]`); if(activeLink) { activeLink.classList.remove('text-slate-300', 'border-transparent', 'hover:text-white'); activeLink.classList.add('bg-slate-800', 'text-indigo-400', 'border-indigo-500', 'shadow-sm'); }            
             if (window.innerWidth < 768) document.getElementById('sidebar-content').classList.add('hidden');
         };
+
         window.backToList = function() { document.getElementById('client-edit-section').classList.add('hidden'); document.getElementById('client-view-section').classList.add('hidden'); document.getElementById('client-list-section').classList.remove('hidden'); };
 
         let pendingConfirmAction = null;
@@ -862,9 +865,7 @@
         window.closeConfirmModal = () => { const mo=document.getElementById('confirm-modal'); mo.classList.add('opacity-0'); document.getElementById('confirm-modal-panel').classList.remove('scale-100'); setTimeout(()=>{ mo.classList.add('hidden'); pendingConfirmAction=null; },200); };
 
         // --- 2. CONFIGURAÇÕES E VARIÁVEIS ---
-        // Adicione seu ID aqui se precisar de acesso emergencial
         const ADMIN_IDS = ["25hMg4MiXENNs4H50TkWBxMZi5r2", "h2YvJ6pwruMAFCQaEghvuWB2uTY2"];        
-        
         const firebaseConfig = { apiKey: "AIzaSyABGUTSwBMEuNLmFDsNRHgXOo3NEs8Q21A", authDomain: "genapplog.firebaseapp.com", projectId: "genapplog", storageBucket: "genapplog.firebasestorage.app", messagingSenderId: "787938700532", appId: "1:787938700532:web:442b667367341fb4ac02a1" }; 
         const appId = firebaseConfig.appId;
         const initialAuthToken = null;
@@ -885,6 +886,13 @@
         const PROD_OC_PATH = `artifacts/${appId}/public/data/occurrences`;
         const TEST_OC_PATH = `artifacts/${appId}/public/data/occurrences_test`;
         const LOGS_PATH = `artifacts/${appId}/public/data/logs`;
+
+        const defaultChecklistData = { alturaPalete: { directa: "1.80m", fracionada: "1.80m" }, multiplosSKU: { directa: "", fracionada: "", directaLimit: "", fracionadaLimit: "" }, multiplosLotes: { directa: "", fracionada: "", directaLimit: "", fracionadaLimit: "" }, multiplosPedidos: { directa: "Não", fracionada: "Não", directaLimit: "", fracionadaLimit: "" }, paletizacaoLastro: { directa: "", fracionada: "" }, paletizacaoTorre: { directa: "", fracionada: "" }, tipoPalete: { directa: "PBR", fracionada: "PBR" }, observacao: { directa: "", fracionada: "" } };
+        const checklistRowsConfig = [{ key: 'alturaPalete', label: 'Altura Palete' }, { key: 'multiplosSKU', label: 'Múltiplos SKU' }, { key: 'multiplosLotes', label: 'Múltiplos Lotes' }, { key: 'multiplosPedidos', label: 'Múltiplos Pedido / NF' }, { key: 'paletizacaoLastro', label: 'Paletização Lastro' }, { key: 'paletizacaoTorre', label: 'Paletização Torre' }, { key: 'tipoPalete', label: 'Tipo Palete' }, { key: 'observacao', label: 'Observação' }];
+        const specificClientRules = { "AMAZON": { ...defaultChecklistData, observacao: { directa: "Exige agendamento prévio (CARP).", fracionada: "Exige agendamento prévio (CARP)." } } };
+        const cdData = { "GRU5": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000367", ie: "241099810118 ", linha1: "Cd Prologis 3: Av. Antonio Candido Machado", linha2: "3100 Andar 5, 07776415 - Cajamar - SP" }, "XBRA": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000448", ie: "241118709114 ", linha1: "Cd Prologis 2: Av. Dr. Joao Abdalla 260", linha2: "Bloco 400, 07776700 - Cajamar - SP" }, "XBRB": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000529", ie: "0842859-07   ", linha1: "Rd Br-101 Sul, 3791bl C, Galpão 5, Sl A", linha2: "54503010 - Cabo De Santo Agostinho - PE " }, "XBRT": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000871", ie: "241134643114 ", linha1: "Via De Acesso Norte KM 38, 420, Galpão 07 ", linha2: "Gleba A Bloco 07, 07789100 Cajamar - SP " }, "XBRZ": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000286", ie: "241115791117 ", linha1: "Cd Prologis 2: Av. Dr. Joao Abdalla 260", linha2: "Bloco 300, 07776700 Cajamar - SP" }, "CNF1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000952", ie: "002668590054 ", linha1: "Avenida Juiz Marco Tulio Isaac 7000", linha2: "32670250, Betim - MG" }, "BSB1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001096", ie: "0774927400365", linha1: "Rd Df, 290, Km 1.2 Lote 13,14,15,16 E 17 -", linha2: " 72501100, Brasilia - DF" }, "POA1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001177", ie: "3820025709   ", linha1: "Rua Da Pedreira, 64, Pavilhão 05", linha2: "92480000, Nova Santa Rita - RS" }, "GIG1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001410", ie: "11821987      ", linha1: "Av Arthur Antonio Sendas, S/N Area 6a", linha2: "25585021, Sao Joao De Meriti, RJ" }, "REC1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "11543694000150", ie: "0920380-00   ", linha1: "RD BR 101 SUL, 9415, Galpão B", linha2: "54503010 - Cabo De Santo Agostinho - PE " }, "FOR2": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001681", ie: "61268801      ", linha1: "Av Quarto Anel Viario, 4343", linha2: "61880000, Itaitinga - CE" } };
+        const labelDimensions = { "4x6": { pw: 800, ll: 1200, aspect: "aspect-[2/3]" }, "4x4": { pw: 800, ll: 800, aspect: "aspect-square" }, "4x2": { pw: 800, ll: 400, aspect: "aspect-[2/1]" }, "4x3.15": { pw: 800, ll: 640, aspect: "aspect-[10/8]" } };
+        const baseApiUrl = 'https://api.labelary.com/v1/printers/8dpmm/labels/';
 
         // --- 3. INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -1008,7 +1016,6 @@
             const inputs = document.querySelectorAll('.data-input');
             const btns = { save: document.getElementById('btn-save-occurrence'), reject: document.getElementById('btn-reject-occurrence'), del: document.getElementById('btn-delete-permanent'), print: document.getElementById('btn-print-occurrence') };
             
-            // Reset
             ['form-ass-colab','form-ass-lider','form-ass-inv'].forEach(id => document.getElementById(id).disabled = true);
             btns.reject.classList.add('hidden'); btns.del.classList.add('hidden'); btns.print.classList.add('hidden');
             inputs.forEach(i => i.disabled = (status !== 'draft'));
@@ -1036,6 +1043,12 @@
                     btns.save.innerText = "Finalizar"; btns.reject.innerText = "Devolver"; btns.del.innerText = "Excluir"; desc.innerText = "Preencha o causador.";
                 } else { btns.save.classList.add('hidden'); desc.innerText = "Aguardando Inventário."; }
             }
+        }
+
+        function updateUIForRole(isAdmin) {
+            const els = { indicator: document.getElementById('admin-indicator'), addBtn: document.getElementById('add-client-btn'), dangerZone: document.getElementById('admin-danger-zone'), navConfig: document.getElementById('nav-link-config') };
+            if (isAdmin) { els.indicator.classList.remove('hidden'); els.addBtn.classList.remove('hidden'); els.dangerZone.classList.remove('hidden'); if(els.navConfig) els.navConfig.classList.remove('hidden'); }
+            else { els.indicator.classList.add('hidden'); els.addBtn.classList.add('hidden'); els.dangerZone.classList.add('hidden'); if(els.navConfig) els.navConfig.classList.add('hidden'); }
         }
 
         safeBind('btn-save-occurrence', 'click', async () => {
@@ -1087,10 +1100,13 @@
         safeBind('btn-back-zpl', 'click', () => { document.getElementById('zpl-tool-amazon').classList.add('hidden'); document.getElementById('zpl-menu').classList.remove('hidden'); });
         safeBind('btn-open-manual', 'click', () => { document.getElementById('zpl-menu').classList.add('hidden'); document.getElementById('zpl-tool-manual').classList.remove('hidden'); });
         safeBind('btn-back-zpl-manual', 'click', () => { document.getElementById('zpl-tool-manual').classList.add('hidden'); document.getElementById('zpl-menu').classList.remove('hidden'); });
+        
         safeBind('btn-open-oc-dashboard', 'click', () => { document.getElementById('ocorrencias-menu-view').classList.add('hidden'); document.getElementById('ocorrencias-dashboard').classList.remove('hidden'); updateDashboard(); });
         safeBind('btn-open-oc-novo', 'click', () => { document.getElementById('ocorrencias-menu-view').classList.add('hidden'); document.getElementById('ocorrencias-novo').classList.remove('hidden'); resetForm(); });
         safeBind('btn-back-oc-dash', 'click', () => { document.getElementById('ocorrencias-dashboard').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-back-oc-form', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
+        safeBind('btn-cancel-occurrence', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
+
         safeBind('btn-dash-filter-apply', 'click', applyDashboardFilters);
         safeBind('btn-dash-filter-clear', 'click', () => { document.getElementById('dash-filter-start').value=''; document.getElementById('dash-filter-end').value=''; applyDashboardFilters(); });
         safeBind('btn-dash-export', 'click', () => { if (filteredOccurrencesData.length === 0) { window.showToast("Sem dados", "error"); return; } const ws = XLSX.utils.json_to_sheet(filteredOccurrencesData); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Dados"); XLSX.writeFile(wb, "relatorio.xlsx"); });
@@ -1102,16 +1118,191 @@
         }
         
         function updateDashboard() {
-             // Lógica simplificada de gráficos para caber
              document.getElementById('dash-total-oc').innerText = filteredOccurrencesData.length;
-             // ... (Resto da lógica de gráficos mantida simplificada) ...
+             // Gráficos Simplificados
+             let types = { FALTA: 0, SOBRA: 0, AVARIA: 0, FALTA_INTERNA: 0 };
+             let locals = { ARMAZENAGEM: 0, ESTOQUE: 0, CHECKOUT: 0, SEPARAÇÃO: 0 };
+             filteredOccurrencesData.forEach(d => { if(types[d.tipo] !== undefined) types[d.tipo]++; if(locals[d.local] !== undefined) locals[d.local]++; });
+             const updateChart = (id, type, labels, data, bg, instance) => {
+                const ctx = document.getElementById(id); if(instance) instance.destroy();
+                return new Chart(ctx, { type, data: { labels, datasets: [{ data, backgroundColor: bg }] }, options: { responsive: true } });
+            };
+            chartTypeInstance = updateChart('chartOcType', 'doughnut', ['Falta', 'Sobra', 'Avaria', 'Falta Int.'], [types.FALTA, types.SOBRA, types.AVARIA, types.FALTA_INTERNA], ['#ef4444', '#3b82f6', '#f59e0b', '#a855f7'], chartTypeInstance);
+            chartLocalInstance = updateChart('chartOcLocal', 'bar', ['Arm.', 'Est.', 'Check.', 'Sep.'], [locals.ARMAZENAGEM, locals.ESTOQUE, locals.CHECKOUT, locals.SEPARAÇÃO], '#6366f1', chartLocalInstance);
         }
-        function applyDashboardFilters() { filteredOccurrencesData = allOccurrencesData; updateDashboard(); } // Simplificado para rodar
+        function applyDashboardFilters() { filteredOccurrencesData = allOccurrencesData; updateDashboard(); } 
 
         // --- FIM ---
+        
+        // Botões Admin
+        safeBind('btn-refresh-admin-list', 'click', renderAdminOccurrenceList);
+        safeBind('btn-wipe-occurrences', 'click', () => {
+            const envName = currentEnv === 'prod' ? 'PRODUÇÃO' : 'TESTE';
+            window.openConfirmModal(`Zerar Ocorrências (${envName})?`, `ATENÇÃO: Isso apagará <b>TODOS</b> os relatórios de ocorrência do ambiente de <b>${envName}</b>.`, async () => {
+                try {
+                    const snapshot = await getDocs(occurrencesCollection);
+                    if (snapshot.empty) { window.showToast("Não há ocorrências para apagar."); window.closeConfirmModal(); return; }
+                    const batch = writeBatch(db); let count = 0;
+                    snapshot.forEach(doc => { batch.delete(doc.ref); count++; });
+                    await batch.commit();
+                    window.showToast(`${count} ocorrências apagadas com sucesso!`); window.closeConfirmModal();
+                } catch (e) { console.error(e); window.showToast("Erro ao limpar dados.", "error"); }
+            });
+        });
+
+        function renderAdminOccurrenceList() {
+            const tbody = document.getElementById('admin-oc-list-tbody');
+            tbody.innerHTML = '';
+            const dateStartVal = document.getElementById('admin-filter-date-start').value;
+            const dateEndVal = document.getElementById('admin-filter-date-end').value;
+            const searchText = document.getElementById('admin-filter-text').value.toLowerCase().trim();
+            const dateStart = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
+            const dateEnd = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
+            let fullList = [...pendingOccurrencesData, ...allOccurrencesData];
+
+            fullList = fullList.filter(item => {
+                if (dateStart && item.jsDate < dateStart) return false;
+                if (dateEnd && item.jsDate > dateEnd) return false;
+                if (searchText) {
+                    const searchString = `${item.nf || ''} ${item.embarque || ''} ${item.tipo || ''}`.toLowerCase();
+                    if (!searchString.includes(searchText)) return false;
+                }
+                return true;
+            });
+            fullList.sort((a, b) => b.jsDate - a.jsDate);
+
+            if (fullList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">Nenhum registro encontrado com esses filtros.</td></tr>'; return; }
+
+            fullList.forEach(item => {
+                const tr = document.createElement('tr'); tr.className = "hover:bg-slate-800 transition-colors";
+                let statusColor = "text-slate-500";
+                if(item.status === 'concluido') statusColor = "text-emerald-400 font-bold";
+                if(item.status.includes('pendente')) statusColor = "text-amber-400";
+                tr.innerHTML = `<td class="px-4 py-2 font-mono">${item.jsDate.toLocaleDateString('pt-BR')}</td><td class="px-4 py-2 font-bold text-white">${item.tipo}</td><td class="px-4 py-2">${item.embarque || '-'} / ${item.nf || '-'}</td><td class="px-4 py-2 ${statusColor} uppercase text-[10px]">${item.status}</td><td class="px-4 py-2 text-right"><button class="text-red-400 hover:text-red-200 bg-red-900/20 hover:bg-red-900/50 p-1.5 rounded transition btn-delete-individual" data-id="${item.id}" title="Excluir permanentemente"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>`;
+                tbody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.btn-delete-individual').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    window.openConfirmModal("Excluir Registro?", "Essa ação é irreversível.", async () => {
+                        try { await deleteDoc(doc(occurrencesCollection, id)); window.showToast("Registro excluído."); window.closeConfirmModal(); renderAdminOccurrenceList(); } catch (err) { console.error(err); window.showToast("Erro ao excluir.", "error"); }
+                    });
+                });
+            });
+        }
+        
+        // Download e Importação (Mantendo as funções que você já tinha)
+        safeBind('download-users-template-btn', 'click', () => {
+            const templateData = [{ "id": "COLE_O_UID_AQUI", "name": "Nome do Colaborador", "role": "OPERADOR" }, { "id": "OUTRO_UID_AQUI", "name": "Nome do Líder", "role": "LIDER" }];
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(templateData, null, 2));
+            const anchor = document.createElement('a'); anchor.setAttribute("href", dataStr); anchor.setAttribute("download", "modelo_equipe.json"); document.body.appendChild(anchor); anchor.click(); anchor.remove();
+        });
+
+        safeBind('users-upload', 'change', (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            const statusDiv = document.getElementById('users-import-status'); const statusText = document.getElementById('users-import-status-text');
+            statusDiv.classList.remove('hidden'); statusText.innerText = "Lendo arquivo de equipe..."; statusText.className = "text-sm text-yellow-400 font-mono";
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const jsonContent = event.target.result; const data = JSON.parse(jsonContent);
+                    if (!Array.isArray(data)) throw new Error("O arquivo deve ser uma lista JSON.");
+                    statusText.innerText = `Processando ${data.length} usuários...`;
+                    const batch = writeBatch(db); let count = 0;
+                    data.forEach(user => {
+                        if (user.id && user.name && user.role) {
+                            const userRef = doc(db, 'users', user.id.trim());
+                            batch.set(userRef, { name: user.name.trim(), role: user.role.toUpperCase().trim(), updatedAt: new Date() });
+                            count++;
+                        }
+                    });
+                    if (count === 0) throw new Error("Nenhum usuário válido encontrado.");
+                    await batch.commit();
+                    window.showToast(`${count} usuários atualizados!`); statusText.innerText = "Importação concluída!"; statusText.className = "text-sm text-emerald-400 font-mono";
+                    e.target.value = ''; setTimeout(() => statusDiv.classList.add('hidden'), 4000);
+                } catch (err) { console.error(err); window.showToast("Erro: " + err.message, 'error'); statusText.innerText = "Falha: " + err.message; statusText.className = "text-sm text-red-400 font-mono"; e.target.value = ''; }
+            };
+            reader.readAsText(file);
+        });
+
+        safeBind('download-template-btn', 'click', () => {
+            const templateData = [{
+                "name": "4 ELOS",
+                "checklist": defaultChecklistData
+            }];
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(templateData, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "modelo_importacao_applog.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+
+        safeBind('file-upload', 'change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const statusDiv = document.getElementById('import-status');
+            const statusText = document.getElementById('import-status-text');
+            statusDiv.classList.remove('hidden');
+            statusText.innerText = "Analisando arquivo...";
+            statusText.className = "text-sm text-yellow-400 font-mono";
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const jsonContent = event.target.result;
+                    const data = JSON.parse(jsonContent);
+                    if (!Array.isArray(data)) throw new Error("O arquivo JSON deve ser uma lista.");
+                    statusText.innerText = `Processando ${data.length} registros...`;
+                    const existingNamesMap = new Map();
+                    clientCache.forEach((value, key) => {
+                        if (value.name) existingNamesMap.set(value.name.toUpperCase().trim(), key);
+                    });
+                    const batch = writeBatch(db);
+                    let createdCount = 0;
+                    let updatedCount = 0;
+                    data.forEach(client => {
+                        if (client.name) {
+                            const normalizedName = client.name.toString().toUpperCase().trim();
+                            const existingId = existingNamesMap.get(normalizedName);
+                            if (existingId) {
+                                const docRef = doc(clientsCollection, existingId);
+                                batch.update(docRef, { checklist: client.checklist || defaultChecklistData });
+                                updatedCount++;
+                            } else {
+                                const newDocRef = doc(clientsCollection);
+                                batch.set(newDocRef, { name: normalizedName, checklist: client.checklist || defaultChecklistData });
+                                createdCount++;
+                            }
+                        }
+                    });
+                    if (createdCount === 0 && updatedCount === 0) throw new Error("Nenhum dado válido.");
+                    statusText.innerText = `Salvando...`;
+                    await batch.commit();
+                    window.showToast(`Sucesso! ${createdCount} criados, ${updatedCount} atualizados.`);
+                    statusText.innerText = "Concluído!";
+                    statusText.className = "text-sm text-emerald-400 font-mono";
+                    e.target.value = '';
+                    setTimeout(() => statusDiv.classList.add('hidden'), 4000);
+                } catch (err) {
+                    console.error(err);
+                    window.showToast("Erro: " + err.message, 'error');
+                    statusText.innerText = "Falha: " + err.message;
+                    statusText.className = "text-sm text-red-400 font-mono";
+                    e.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        safeBind('btn-reset-db', 'click', () => { window.openConfirmModal("Resetar BD?", "PERIGO: Reverte todos os dados.", async () => { try { const s = await getDocs(clientsCollection); const b = writeBatch(db); s.forEach(d => { const n = d.data().name?.toUpperCase().trim(); b.update(d.ref, { checklist: specificClientRules[n] || defaultChecklistData }); }); await b.commit(); window.showToast("Reset concluído."); } catch (e) { window.showToast("Erro reset", 'error'); } window.closeConfirmModal(); }); });
+        safeBind('btn-apply-rules', 'click', () => { window.openConfirmModal("Aplicar Regras?", "Atualiza clientes com regras hardcoded.", async () => { try { const s = await getDocs(clientsCollection); const b = writeBatch(db); let c = 0; s.forEach(d => { const n = d.data().name?.toUpperCase().trim(); if (specificClientRules[n]) { b.update(d.ref, { checklist: specificClientRules[n] }); c++; } }); if (c > 0) await b.commit(); window.showToast(`${c} atualizados.`); } catch (e) { window.showToast("Erro", 'error'); } window.closeConfirmModal(); }); });
+
     </script>
 </body>
 
 </html>
+
 
 
