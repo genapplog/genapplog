@@ -552,148 +552,172 @@
                             </div>
                         </div>
                     </div>
-                    <div id="ocorrencias-novo" class="hidden">
-                        <button id="btn-back-oc-form" class="text-slate-300 hover:text-white flex items-center gap-2 mb-6 transition group">
-                            <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                            </span>
-                            <span class="font-medium">Voltar</span>
-                        </button>
-                        <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden max-w-4xl mx-auto border border-slate-700 relative">
-                            <div id="form-status-bar" class="bg-indigo-900/50 text-indigo-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/30">
-                                Novo Relatório
-                            </div>
-                            <div class="bg-slate-950 text-center py-3 border-b border-slate-700">
-                                <h2 class="text-white font-bold text-xl uppercase tracking-wide">Relatório de Ocorrências de Estoque</h2>
-                            </div>
-                            <div class="p-1 bg-slate-900 relative" id="form-content-area">
-                                <div class="grid grid-cols-1 md:grid-cols-3 border border-slate-700 mb-2">
-                                    <div class="border-r border-slate-700 bg-slate-800">
-                                        <div class="header-grey">Embarque</div>
-                                        <div class="flex items-center p-2 bg-slate-800/50">
-                                            <span class="text-slate-400 text-sm font-bold mr-2">Nº:</span>
-                                            <input type="text" id="form-embarque" class="data-input w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors">
-                                        </div>
-                                    </div>
-                                    <div class="border-r border-slate-700 bg-slate-800">
-                                        <div class="header-grey">Nota Fiscal</div>
-                                        <div class="flex items-center p-2 bg-slate-800/50">
-                                            <span class="text-slate-400 text-sm font-bold mr-2">Nº:</span>
-                                            <input type="text" id="form-nf" class="data-input w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors">
-                                        </div>
-                                    </div>
-                                    <div class="bg-slate-800">
-                                        <div class="header-grey">Data:</div>
-                                        <div class="flex items-center p-2 bg-slate-800/50">
-                                            <input type="date" id="form-data" class="data-input w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors [color-scheme:dark]">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="border border-slate-700 mb-2">
-                                    <div class="grid grid-cols-1 md:grid-cols-2">
-                                        <div class="border-r border-slate-700">
-                                            <div class="header-grey">Ocorrência</div>
-                                            <div class="grid grid-cols-4 bg-slate-800/30">
-                                            <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-                                            <span class="text-xs font-bold text-slate-300 mb-2">FALTA</span>
-                                            <input type="radio" name="oc_tipo" value="FALTA" class="data-input custom-check">
-                                      </label>
-                                            <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-                                            <span class="text-xs font-bold text-slate-300 mb-2">SOBRA</span>
-                                            <input type="radio" name="oc_tipo" value="SOBRA" class="data-input custom-check">
-                                      </label>
-                                            <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-                                            <span class="text-xs font-bold text-slate-300 mb-2">AVARIA</span>
-                                            <input type="radio" name="oc_tipo" value="AVARIA" class="data-input custom-check">
-                                      </label>
-                                            <label class="flex flex-col items-center p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-                                            <span class="text-xs font-bold text-slate-300 mb-2 text-center leading-tight">FALTA<br>INTERNA</span>
-                                            <input type="radio" name="oc_tipo" value="FALTA_INTERNA" class="data-input custom-check">
-                                      </label>
-                                        </div>
-                                        </div>
-                                        <div class="bg-slate-800 flex flex-col">
-                                            <div class="header-grey">Observação:</div>
-                                            <textarea id="form-obs" class="data-input flex-1 w-full min-h-[80px] bg-slate-800 p-3 text-slate-200 text-sm resize-none focus:outline-none focus:bg-slate-700 transition-colors" placeholder="Descreva os detalhes..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
+              <div id="ocorrencias-novo" class="hidden">
+    <button id="btn-back-oc-form" class="text-slate-300 hover:text-white flex items-center gap-2 mb-6 transition group">
+        <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </span>
+        <span class="font-medium">Voltar para Lista</span>
+    </button>
+    
+    <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden max-w-5xl mx-auto border border-slate-700 relative">
+        <div id="form-status-bar" class="bg-indigo-900/40 text-indigo-200 px-4 py-3 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/20 backdrop-blur-sm">
+            Nova Divergência
+        </div>
 
-                                <div class="border border-slate-700 mb-2">
-                                    <div class="header-grey">Tipo de Ocorrência - Embalagem</div>
-                                    <div class="grid grid-cols-1 md:grid-cols-4 bg-slate-800/30">
-                                        <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">AMASSADA</span><input type="checkbox" id="check-amassada" class="data-input custom-check"></label>
-                                        <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">RASGADA</span><input type="checkbox" id="check-rasgada" class="data-input custom-check"></label>
-                                        <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">VAZAMENTO</span><input type="checkbox" id="check-vazamento" class="data-input custom-check"></label>
-                                        <div class="flex flex-col items-center p-2"><span class="text-xs font-bold text-slate-300 mb-1">OUTROS</span><input type="text" id="form-outros-emb" placeholder="Especificar..." class="data-input w-full mt-1 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-indigo-500"></div>
-                                    </div>
-                                </div>
-                                <div class="border border-slate-700 mb-2">
-                                    <div class="header-grey">Local Ocorrência</div>
-                                    <div class="grid grid-cols-2 md:grid-cols-4 bg-slate-800/30">
-                                        <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">ARMAZENAGEM</span><input type="radio" name="oc_local" value="ARMAZENAGEM" class="data-input custom-check"></label>
-                                        <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">ESTOQUE</span><input type="radio" name="oc_local" value="ESTOQUE" class="data-input custom-check"></label>
-                                        <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">CHECKOUT</span><input type="radio" name="oc_local" value="CHECKOUT" class="data-input custom-check"></label>
-                                        <label class="flex flex-col items-center p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">SEPARAÇÃO</span><input type="radio" name="oc_local" value="SEPARAÇÃO" class="data-input custom-check"></label>
-                                    </div>
-                                </div>
-                                <div class="border border-slate-700 mb-2">
-                                    <div class="header-grey border-b border-slate-700">Item Ocorrência</div>
-                                    <div class="grid grid-cols-12 bg-slate-800">
-                                        <div class="col-span-2 border-r border-slate-700 border-b p-2 text-center text-[10px] font-bold text-slate-400">CÓDIGO</div>
-                                        <div class="col-span-4 border-r border-slate-700 border-b p-2 text-center text-[10px] font-bold text-slate-400">ITEM</div>
-                                        <div class="col-span-2 border-r border-slate-700 border-b p-2 text-center text-[10px] font-bold text-slate-400">LOTE</div>
-                                        <div class="col-span-2 border-r border-slate-700 border-b p-2 text-center text-[10px] font-bold text-slate-400">QTD (CX)</div>
-                                        <div class="col-span-2 border-b border-slate-700 p-2 text-center text-[10px] font-bold text-slate-400">END. ORIGEM</div>
-                                        <div class="col-span-2 border-r border-slate-700 p-1"><input type="text" id="form-item-cod" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 font-mono py-1"></div>
-                                        <div class="col-span-4 border-r border-slate-700 p-1"><input type="text" id="form-item-desc" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs focus:outline-none focus:bg-slate-700 py-1 px-2"></div>
-                                        <div class="col-span-2 border-r border-slate-700 p-1"><input type="text" id="form-item-lote" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 py-1"></div>
-                                        <div class="col-span-2 border-r border-slate-700 p-1"><input type="number" id="form-item-qtd" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 py-1"></div>
-                                        <div class="col-span-2 p-1"><input type="text" id="form-item-end" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 py-1"></div>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-4 border border-slate-700">
-                                    <div class="border-r border-slate-700">
-                                        <div class="header-grey bg-slate-800 text-center">Causador</div>
-                                        <div class="bg-slate-800 p-2 border-t border-slate-700">
-                                            <input type="text" id="form-infrator" placeholder="Nome..." class="data-input w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors">
-                                        </div>
-                                    </div>
-                                    <div class="border-r border-slate-700" id="box-colab">
-                                        <div class="header-grey bg-slate-800 text-center">Identificador (Início)</div>
-                                        <div class="bg-slate-800 p-2 border-t border-slate-700">
-                                            <input type="text" id="form-ass-colab" placeholder="Assinar..." class="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors">
-                                        </div>
-                                    </div>
-                                    <div class="border-r border-slate-700" id="box-lider">
-                                        <div class="header-grey bg-slate-800 text-center">Líder (Validação)</div>
-                                        <div class="bg-slate-800 p-2 border-t border-slate-700">
-                                            <input type="text" id="form-ass-lider" placeholder="Aguardando..." disabled class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors">
-                                        </div>
-                                    </div>
-                                    <div id="box-inv">
-                                        <div class="header-grey bg-slate-800 text-center">Inventário (Final)</div>
-                                        <div class="bg-slate-800 p-2 border-t border-slate-700">
-                                            <input type="text" id="form-ass-inv" placeholder="Aguardando..." disabled class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700">
-                                <span id="form-action-desc" class="text-xs text-slate-400 italic hidden md:block"></span>
-                                <div class="flex gap-3 ml-auto">
-    <button id="btn-cancel-occurrence" class="px-6 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800 font-medium transition">Cancelar</button>
-    
-    <button id="btn-reject-occurrence" class="hidden px-6 py-2 rounded-lg bg-amber-900/50 border border-amber-800 text-amber-200 font-medium hover:bg-amber-900 transition">Devolver (Correção)</button>
-    
-    <button id="btn-delete-permanent" class="hidden px-6 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm transition">Excluir (Improcedente)</button>
-    
-    <button id="btn-save-occurrence" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Salvar e Assinar</button>
-</div>
-                            </div>
+        <div class="bg-slate-950 text-center py-4 border-b border-slate-700">
+            <h2 class="text-white font-bold text-xl uppercase tracking-wide flex justify-center items-center gap-2">
+                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                Relatório de Divergência (RNC)
+            </h2>
+        </div>
+
+        <div class="p-6 bg-slate-900 relative space-y-6" id="form-content-area">
+            
+            <div>
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 border-b border-slate-800 pb-1">Dados de Rastreabilidade</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 mb-1 block">Embarque</label>
+                        <input type="text" id="form-embarque" class="data-input w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:border-indigo-500 outline-none transition" placeholder="Ex: 123456">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 mb-1 block">Nota Fiscal</label>
+                        <input type="text" id="form-nf" class="data-input w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:border-indigo-500 outline-none transition" placeholder="Ex: 000.001.234">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 mb-1 block">Data da Ocorrência</label>
+                        <input type="date" id="form-data" class="data-input w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:border-indigo-500 outline-none transition [color-scheme:dark]">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                     <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Classificação do Problema</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3">
+                                <input type="radio" name="oc_tipo" value="FALTA" class="data-input text-indigo-500 focus:ring-0">
+                                <span class="text-sm font-bold text-red-400">FALTA</span>
+                            </label>
+                            <label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3">
+                                <input type="radio" name="oc_tipo" value="SOBRA" class="data-input text-indigo-500 focus:ring-0">
+                                <span class="text-sm font-bold text-blue-400">SOBRA</span>
+                            </label>
+                            <label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3">
+                                <input type="radio" name="oc_tipo" value="AVARIA" class="data-input text-indigo-500 focus:ring-0">
+                                <span class="text-sm font-bold text-amber-400">AVARIA</span>
+                            </label>
+                            <label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3">
+                                <input type="radio" name="oc_tipo" value="FALTA_INTERNA" class="data-input text-indigo-500 focus:ring-0">
+                                <span class="text-sm font-bold text-purple-400">FALTA INT.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Local da Divergência</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="bg-slate-800 px-3 py-1 rounded border border-slate-700 cursor-pointer hover:border-slate-500 text-xs text-slate-300 select-none">
+                                <input type="radio" name="oc_local" value="ARMAZENAGEM" class="hidden peer">
+                                <span class="peer-checked:text-indigo-400 peer-checked:font-bold">Armazenagem</span>
+                            </label>
+                            <label class="bg-slate-800 px-3 py-1 rounded border border-slate-700 cursor-pointer hover:border-slate-500 text-xs text-slate-300 select-none">
+                                <input type="radio" name="oc_local" value="ESTOQUE" class="hidden peer">
+                                <span class="peer-checked:text-indigo-400 peer-checked:font-bold">Estoque</span>
+                            </label>
+                            <label class="bg-slate-800 px-3 py-1 rounded border border-slate-700 cursor-pointer hover:border-slate-500 text-xs text-slate-300 select-none">
+                                <input type="radio" name="oc_local" value="SEPARAÇÃO" class="hidden peer">
+                                <span class="peer-checked:text-indigo-400 peer-checked:font-bold">Separação</span>
+                            </label>
+                             <label class="bg-slate-800 px-3 py-1 rounded border border-slate-700 cursor-pointer hover:border-slate-500 text-xs text-slate-300 select-none">
+                                <input type="radio" name="oc_local" value="CHECKOUT" class="hidden peer">
+                                <span class="peer-checked:text-indigo-400 peer-checked:font-bold">Checkout</span>
+                            </label>
                         </div>
                     </div>
                 </div>
+
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Relato Detalhado</h3>
+                    <textarea id="form-obs" class="data-input w-full h-40 bg-slate-800 border border-slate-600 rounded p-3 text-slate-200 text-sm resize-none focus:border-indigo-500 transition-colors" placeholder="Descreva os detalhes do ocorrido, quantidades divergentes e justificativas..."></textarea>
+                </div>
+            </div>
+
+            <div class="border border-slate-700 rounded-lg overflow-hidden">
+                <table class="w-full text-xs text-left">
+                    <thead class="bg-slate-950 text-slate-400 font-medium border-b border-slate-700">
+                        <tr>
+                            <th class="p-2 border-r border-slate-700 w-24">CÓDIGO</th>
+                            <th class="p-2 border-r border-slate-700">DESCRIÇÃO DO ITEM</th>
+                            <th class="p-2 border-r border-slate-700 w-24">LOTE</th>
+                            <th class="p-2 border-r border-slate-700 w-20 text-center">QTD (CX)</th>
+                            <th class="p-2 w-24 text-center">ENDEREÇO</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-slate-800">
+                        <tr>
+                            <td class="p-0 border-r border-slate-700"><input type="text" id="form-item-cod" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td>
+                            <td class="p-0 border-r border-slate-700"><input type="text" id="form-item-desc" class="data-input w-full bg-transparent p-2 text-white outline-none"></td>
+                            <td class="p-0 border-r border-slate-700"><input type="text" id="form-item-lote" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td>
+                            <td class="p-0 border-r border-slate-700"><input type="number" id="form-item-qtd" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td>
+                            <td class="p-0"><input type="text" id="form-item-end" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="flex flex-wrap gap-4 p-3 bg-slate-800/50 rounded border border-slate-700/50 items-center">
+                <span class="text-xs font-bold text-slate-500 uppercase mr-2">Condição da Embalagem:</span>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="check-amassada" class="data-input rounded border-slate-600 text-indigo-500 focus:ring-0"><span class="text-sm text-slate-300">Amassada</span></label>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="check-rasgada" class="data-input rounded border-slate-600 text-indigo-500 focus:ring-0"><span class="text-sm text-slate-300">Rasgada</span></label>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="check-vazamento" class="data-input rounded border-slate-600 text-indigo-500 focus:ring-0"><span class="text-sm text-slate-300">Vazamento</span></label>
+                <input type="text" id="form-outros-emb" placeholder="Outros detalhes..." class="data-input ml-auto bg-slate-900 border-b border-slate-600 text-xs text-white px-2 py-1 outline-none w-48 focus:border-indigo-500 transition">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-slate-700 border border-slate-700 rounded-lg overflow-hidden mt-6">
+                <div class="bg-slate-800 p-4">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Origem / Responsável</label>
+                    <input type="text" id="form-infrator" placeholder="Preenchido pelo Inventário" class="data-input w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white text-sm focus:border-indigo-500 transition-colors">
+                    <p class="text-[10px] text-slate-500 mt-1 italic">*Quem causou ou identificou a divergência.</p>
+                </div>
+
+                <div class="bg-slate-800 p-4 relative">
+                    <label class="text-[10px] font-bold text-indigo-400 uppercase block mb-2">1. Identificado Por</label>
+                    <input type="text" id="form-ass-colab" placeholder="Assinar..." class="w-full bg-slate-900 border border-indigo-900/50 rounded px-3 py-2 text-white text-sm focus:border-indigo-500 transition-colors">
+                </div>
+
+                <div class="bg-slate-800 p-4" id="box-lider">
+                    <label class="text-[10px] font-bold text-amber-500 uppercase block mb-2">2. Validação Liderança</label>
+                    <input type="text" id="form-ass-lider" placeholder="Aguardando..." disabled class="w-full bg-slate-900/50 border border-slate-700 rounded px-3 py-2 text-slate-500 text-sm">
+                </div>
+            </div>
+             <div class="mt-2 bg-slate-800 p-4 rounded border border-slate-700" id="box-inv">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-900/20 p-2 rounded text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                    <div class="flex-1">
+                        <label class="text-[10px] font-bold text-blue-400 uppercase block mb-1">3. Conclusão Inventário</label>
+                        <input type="text" id="form-ass-inv" placeholder="Aguardando validação final..." disabled class="w-full bg-slate-900/50 border border-slate-700 rounded px-3 py-2 text-slate-500 text-sm">
+                    </div>
+                </div>
+             </div>
+
+        </div>
+
+        <div class="bg-slate-950 p-4 flex flex-col md:flex-row justify-between items-center border-t border-slate-800 gap-4">
+            <span id="form-action-desc" class="text-xs text-slate-400 italic">Preencha os dados iniciais para gerar o rascunho.</span>
+            <div class="flex gap-3">
+                <button id="btn-cancel-occurrence" class="px-5 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 font-medium transition text-sm">Cancelar</button>
+                <button id="btn-reject-occurrence" class="hidden px-5 py-2 rounded-lg bg-amber-900/20 border border-amber-800 text-amber-200 font-medium hover:bg-amber-900/50 transition text-sm">Solicitar Correção</button>
+                <button id="btn-delete-permanent" class="hidden px-5 py-2 rounded-lg bg-red-900/20 border border-red-800 text-red-200 font-medium hover:bg-red-900/50 transition text-sm">Excluir RNC</button>
+                <button id="btn-save-occurrence" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-lg shadow-indigo-900/20 transition text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Salvar e Avançar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="configuracoes" class="page-content hidden fade-in max-w-4xl mx-auto">
     <header class="mb-8"><h1 class="text-3xl font-bold text-white">Configurações</h1></header>
     
@@ -1990,6 +2014,7 @@ safeBind('btn-reset-db','click',()=>{
     </script>
 </body>
 </html>
+
 
 
 
