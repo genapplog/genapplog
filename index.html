@@ -57,8 +57,6 @@
             flex-direction: column;
             gap: 10px;
         }
-        
-        /* Toggle Switch CSS */
         .toggle-checkbox:checked {
             right: 0;
             border-color: #68D391;
@@ -66,8 +64,6 @@
         .toggle-checkbox:checked + .toggle-label {
             background-color: #68D391;
         }
-        
-        /* Scrollbar customizada escura */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -82,14 +78,10 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #475569; 
         }
-        
-        /* Chart.js Dark Mode Override */
         canvas {
             filter: drop-shadow(0 0 2px rgba(255,255,255,0.1));
         }
-
-        /* Banner de Teste */
-        #test-mode-banner {
+            #test-mode-banner {
             background: repeating-linear-gradient(
                 45deg,
                 #ca8a04,
@@ -98,8 +90,6 @@
                 #a16207 20px
             );
         }
-
-        /* Estilos Específicos do Módulo Ocorrências */
         .header-grey {
             background-color: #1e293b; /* slate-800 */
             color: #94a3b8; /* slate-400 */
@@ -111,7 +101,6 @@
             text-align: center;
             border-bottom: 1px solid #334155;
         }
-
         .custom-check {
             appearance: none;
             width: 1.5rem;
@@ -140,29 +129,20 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
-
-        /* Fix para Date Input no Dark Mode */
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
             cursor: pointer;
         }
-
-        /* Status Badges */
         .badge-pending { background-color: #f59e0b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
         .badge-success { background-color: #10b981; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
         .badge-blue { background-color: #3b82f6; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 h-full overflow-hidden">
-
     <div id="toast-container"></div>
-
     <div class="flex h-full flex-col md:flex-row relative">
-        
         <div id="test-mode-strip" class="hidden absolute top-0 left-0 w-full h-1.5 z-50 bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.7)]"></div>
-
         <div class="w-full md:w-64 bg-slate-950 text-white flex-shrink-0 flex flex-col shadow-xl z-30 border-r border-slate-800">
-            
             <div class="p-4 md:p-6 flex justify-between items-center border-b border-slate-800 md:border-none relative overflow-hidden">
                 <div id="test-mode-bg-indicator" class="absolute inset-0 bg-amber-500/10 hidden pointer-events-none"></div>
                 <button id="app-logo-btn" class="flex items-center gap-3 group focus:outline-none transition-transform active:scale-95 relative z-10">
@@ -178,7 +158,6 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
             </div>
-
             <div id="sidebar-content" class="hidden md:flex flex-col flex-1 overflow-y-auto p-4 md:p-6 pt-2 md:pt-0">
                 <nav id="sidebar-nav" class="space-y-1 flex-1">
                     <a href="#" data-page="dashboard" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg bg-slate-800 text-indigo-400 font-medium transition-all duration-200 border-l-4 border-indigo-500 shadow-sm">
@@ -196,14 +175,12 @@
                     <a href="#" data-page="ocorrencias" class="nav-link flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
                         <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         Ocorrências
-                    </a>
-                    
+                    </a>                  
                     <a href="#" id="nav-link-config" data-page="configuracoes" class="nav-link hidden flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         Configurações
                     </a>
-                </nav>
-                
+                </nav>            
                 <div class="mt-8 pt-6 border-t border-slate-800">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center flex-shrink-0 border border-slate-700 relative">
@@ -230,11 +207,10 @@
                         <h1 class="text-4xl font-bold text-white mb-3">Bem-vindo ao AppLog</h1>
                         <p class="text-lg text-slate-400 mb-2 leading-relaxed">Sistema para gestão de processos logísticos.</p>
                         <div id="dash-env-warning" class="hidden mt-4 bg-amber-900/30 border border-amber-600/50 text-amber-200 px-4 py-2 rounded-lg text-sm font-mono">
-                            ⚠️ MODO DE TESTE ATIVO
+                            ⚠️ MODO DE TESTE ATIVO ⚠️
                         </div>
                     </div>
                 </div>
-
                 <div id="clientes" class="page-content hidden fade-in max-w-6xl mx-auto">
                     <div id="client-list-section">
                         <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -249,20 +225,17 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
-                                    <input type="text" id="client-search" class="block w-full pl-10 pr-10 py-2.5 border border-slate-700 rounded-lg leading-5 bg-slate-800 text-white placeholder-slate-400 focus:outline-none focus:placeholder-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out shadow-sm" placeholder="Buscar cliente...">
-                                    
+                                    <input type="text" id="client-search" class="block w-full pl-10 pr-10 py-2.5 border border-slate-700 rounded-lg leading-5 bg-slate-800 text-white placeholder-slate-400 focus:outline-none focus:placeholder-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out shadow-sm" placeholder="Buscar cliente...">                           
                                     <button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white hidden cursor-pointer transition-colors focus:outline-none">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                     </button>
-                                </div>
-                                
+                                </div>                                
                                 <button id="add-client-btn" class="hidden w-full md:w-auto bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-indigo-500 focus:ring-4 focus:ring-indigo-900 transition shadow-sm flex items-center justify-center gap-2 whitespace-nowrap">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                                     Adicionar Cliente
                                 </button>
                             </div>
                         </header>
-
                         <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-slate-700">
@@ -358,7 +331,7 @@
                                     </span>
                                     <h1 class="text-2xl md:text-3xl font-bold text-white">Gerador Etiqueta Zebra</h1>
                                 </div>
-                                <p class="text-slate-300 max-w-2xl text-sm md:text-base">Gerencie e imprima etiquetas para diferentes marketplaces e transportadoras.</p>
+                                <p class="text-slate-300 max-w-2xl text-sm md:text-base">Imprima etiquetas para diferentes marketplaces e transportadoras.</p>
                             </header>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -398,7 +371,17 @@
                                             <div>
                                                 <label class="block text-xs font-medium text-slate-300 uppercase tracking-wide mb-1.5">CD Amazon</label>
                                                 <select id="selectCdAmazon" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
-                                                    <option value="GRU5">GRU5 - Cajamar, SP</option><option value="XBRA">XBRA - Cajamar, SP</option><option value="XBRB">XBRB - Cabo De S. Agostinho</option><option value="XBRT">XBRT - Cajamar, SP</option><option value="XBRZ">XBRZ - Cajamar, SP</option><option value="CNF1">CNF1 - Betim, MG</option><option value="BSB1">BSB1 - Brasilia, DF</option><option value="POA1">POA1 - Nova Santa Rita</option><option value="GIG1">GIG1 - Sao Joao De Meriti</option><option value="REC1">REC1 - Cabo de S. Agostinho</option><option value="FOR2">FOR2 - Itaitinga, CE</option>
+                                                    <option value="GRU5">GRU5 - Cajamar, SP</option>
+                                                    <option value="XBRA">XBRA - Cajamar, SP</option>
+                                                    <option value="XBRB">XBRB - Cabo De S. Agostinho</option>
+                                                    <option value="XBRT">XBRT - Cajamar, SP</option>
+                                                    <option value="XBRZ">XBRZ - Cajamar, SP</option>
+                                                    <option value="CNF1">CNF1 - Betim, MG</option>
+                                                    <option value="BSB1">BSB1 - Brasilia, DF</option>
+                                                    <option value="POA1">POA1 - Nova Santa Rita</option>
+                                                    <option value="GIG1">GIG1 - Sao Joao De Meriti</option>
+                                                    <option value="REC1">REC1 - Cabo de S. Agostinho</option>
+                                                    <option value="FOR2">FOR2 - Itaitinga, CE</option>
                                                 </select>
                                             </div>
                                             <div><label class="block text-xs font-medium text-slate-300 uppercase tracking-wide mb-1.5">Chave NF</label><input type="text" id="inputChaveNf" maxlength="44" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
@@ -421,7 +404,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div id="zpl-tool-manual" class="hidden">
                             <button id="btn-back-zpl-manual" class="text-slate-300 hover:text-white flex items-center gap-2 mb-6 transition group">
                                 <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg></span>
@@ -462,7 +444,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="ocorrencias" class="page-content hidden fade-in max-w-7xl mx-auto">
                     <div id="ocorrencias-menu-view">
                         <header class="mb-10 border-b border-slate-700 pb-6">
@@ -474,19 +455,16 @@
                             </div>
                             <p class="text-slate-300 max-w-2xl">Gestão e reporte de divergências de estoque.</p>
                         </header>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                             <button id="btn-open-oc-dashboard" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-8 rounded-2xl flex flex-col items-center text-center group shadow-lg w-full">
                                 <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Dashboard</h3>
                                 <p class="text-slate-300">Visualizar indicadores de relatórios concluídos.</p>
                             </button>
-                            
                             <button id="btn-open-oc-novo" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-8 rounded-2xl flex flex-col items-center text-center group shadow-lg w-full">
                                 <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Novo Relatório</h3>
                                 <p class="text-slate-300">Iniciar um novo registro de ocorrência.</p>
                             </button>
                         </div>
-
                         <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-lg">
                             <div class="p-4 border-b border-slate-700 bg-slate-800/50 flex justify-between items-center">
                                 <h3 class="font-bold text-white flex items-center gap-2">
@@ -512,15 +490,13 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="ocorrencias-dashboard" class="hidden">
                         <button id="btn-back-oc-dash" class="text-slate-300 hover:text-white flex items-center gap-2 mb-6 transition group">
                             <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                             </span>
                             <span class="font-medium">Voltar</span>
-                        </button>
-                        
+                        </button>                        
                         <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 mb-6 flex flex-col md:flex-row gap-4 items-end shadow-md">
                             <div class="flex-1 w-full">
                                 <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Data Início</label>
@@ -541,7 +517,6 @@
                                 Exportar XLSX
                             </button>
                         </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                             <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
                                 <h4 class="text-slate-400 text-sm font-semibold uppercase">Ocorrências Concluídas</h4>
@@ -556,7 +531,6 @@
                                 <p class="text-xl font-bold text-emerald-400 mt-2" id="dash-last-date">-</p>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
                                 <h4 class="text-slate-200 font-bold mb-4">Ocorrências por Tipo</h4>
@@ -566,8 +540,7 @@
                                 <h4 class="text-slate-200 font-bold mb-4">Ocorrências por Local</h4>
                                 <canvas id="chartOcLocal"></canvas>
                             </div>
-                        </div>
-                        
+                        </div>                        
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                             <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
                                 <h4 class="text-slate-200 font-bold mb-4">Top 10 Causadores</h4>
@@ -579,7 +552,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="ocorrencias-novo" class="hidden">
                         <button id="btn-back-oc-form" class="text-slate-300 hover:text-white flex items-center gap-2 mb-6 transition group">
                             <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors">
@@ -587,16 +559,13 @@
                             </span>
                             <span class="font-medium">Voltar</span>
                         </button>
-
                         <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden max-w-4xl mx-auto border border-slate-700 relative">
                             <div id="form-status-bar" class="bg-indigo-900/50 text-indigo-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/30">
                                 Novo Relatório
                             </div>
-
                             <div class="bg-slate-950 text-center py-3 border-b border-slate-700">
                                 <h2 class="text-white font-bold text-xl uppercase tracking-wide">Relatório de Ocorrências de Estoque</h2>
                             </div>
-
                             <div class="p-1 bg-slate-900 relative" id="form-content-area">
                                 <div class="grid grid-cols-1 md:grid-cols-3 border border-slate-700 mb-2">
                                     <div class="border-r border-slate-700 bg-slate-800">
@@ -620,31 +589,28 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="border border-slate-700 mb-2">
                                     <div class="grid grid-cols-1 md:grid-cols-2">
                                         <div class="border-r border-slate-700">
                                             <div class="header-grey">Ocorrência</div>
                                             <div class="grid grid-cols-4 bg-slate-800/30">
-    <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-        <span class="text-xs font-bold text-slate-300 mb-2">FALTA</span>
-        <input type="radio" name="oc_tipo" value="FALTA" class="data-input custom-check">
-    </label>
-    <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-        <span class="text-xs font-bold text-slate-300 mb-2">SOBRA</span>
-        <input type="radio" name="oc_tipo" value="SOBRA" class="data-input custom-check">
-    </label>
-    <!-- Adicionado border-r aqui para separar do novo item -->
-    <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-        <span class="text-xs font-bold text-slate-300 mb-2">AVARIA</span>
-        <input type="radio" name="oc_tipo" value="AVARIA" class="data-input custom-check">
-    </label>
-    <!-- Novo Item Adicionado -->
-    <label class="flex flex-col items-center p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
-        <span class="text-xs font-bold text-slate-300 mb-2 text-center leading-tight">FALTA<br>INTERNA</span>
-        <input type="radio" name="oc_tipo" value="FALTA_INTERNA" class="data-input custom-check">
-    </label>
-</div>
+                                            <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                            <span class="text-xs font-bold text-slate-300 mb-2">FALTA</span>
+                                            <input type="radio" name="oc_tipo" value="FALTA" class="data-input custom-check">
+                                      </label>
+                                            <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                            <span class="text-xs font-bold text-slate-300 mb-2">SOBRA</span>
+                                            <input type="radio" name="oc_tipo" value="SOBRA" class="data-input custom-check">
+                                      </label>
+                                            <label class="flex flex-col items-center border-r border-slate-700 p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                            <span class="text-xs font-bold text-slate-300 mb-2">AVARIA</span>
+                                            <input type="radio" name="oc_tipo" value="AVARIA" class="data-input custom-check">
+                                      </label>
+                                            <label class="flex flex-col items-center p-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                            <span class="text-xs font-bold text-slate-300 mb-2 text-center leading-tight">FALTA<br>INTERNA</span>
+                                            <input type="radio" name="oc_tipo" value="FALTA_INTERNA" class="data-input custom-check">
+                                      </label>
+                                        </div>
                                         </div>
                                         <div class="bg-slate-800 flex flex-col">
                                             <div class="header-grey">Observação:</div>
@@ -662,7 +628,6 @@
                                         <div class="flex flex-col items-center p-2"><span class="text-xs font-bold text-slate-300 mb-1">OUTROS</span><input type="text" id="form-outros-emb" placeholder="Especificar..." class="data-input w-full mt-1 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-indigo-500"></div>
                                     </div>
                                 </div>
-
                                 <div class="border border-slate-700 mb-2">
                                     <div class="header-grey">Local Ocorrência</div>
                                     <div class="grid grid-cols-2 md:grid-cols-4 bg-slate-800/30">
@@ -672,7 +637,6 @@
                                         <label class="flex flex-col items-center p-3 cursor-pointer hover:bg-slate-800/50 transition-colors"><span class="text-xs font-bold text-slate-300 mb-2">SEPARAÇÃO</span><input type="radio" name="oc_local" value="SEPARAÇÃO" class="data-input custom-check"></label>
                                     </div>
                                 </div>
-
                                 <div class="border border-slate-700 mb-2">
                                     <div class="header-grey border-b border-slate-700">Item Ocorrência</div>
                                     <div class="grid grid-cols-12 bg-slate-800">
@@ -681,7 +645,6 @@
                                         <div class="col-span-2 border-r border-slate-700 border-b p-2 text-center text-[10px] font-bold text-slate-400">LOTE</div>
                                         <div class="col-span-2 border-r border-slate-700 border-b p-2 text-center text-[10px] font-bold text-slate-400">QTD (CX)</div>
                                         <div class="col-span-2 border-b border-slate-700 p-2 text-center text-[10px] font-bold text-slate-400">END. ORIGEM</div>
-
                                         <div class="col-span-2 border-r border-slate-700 p-1"><input type="text" id="form-item-cod" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 font-mono py-1"></div>
                                         <div class="col-span-4 border-r border-slate-700 p-1"><input type="text" id="form-item-desc" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs focus:outline-none focus:bg-slate-700 py-1 px-2"></div>
                                         <div class="col-span-2 border-r border-slate-700 p-1"><input type="text" id="form-item-lote" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 py-1"></div>
@@ -689,7 +652,6 @@
                                         <div class="col-span-2 p-1"><input type="text" id="form-item-end" class="data-input w-full bg-slate-700/50 rounded border border-transparent hover:border-slate-600 text-white text-xs text-center focus:outline-none focus:bg-slate-700 py-1"></div>
                                     </div>
                                 </div>
-
                                 <div class="grid grid-cols-1 md:grid-cols-4 border border-slate-700">
                                     <div class="border-r border-slate-700">
                                         <div class="header-grey bg-slate-800 text-center">Causador</div>
@@ -716,7 +678,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700">
                                 <span id="form-action-desc" class="text-xs text-slate-400 italic hidden md:block"></span>
@@ -728,7 +689,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="configuracoes" class="page-content hidden fade-in max-w-4xl mx-auto">
                     <header class="mb-8"><h1 class="text-3xl font-bold text-white">Configurações</h1></header>
                     <div class="bg-slate-800 p-12 rounded-xl shadow-lg border border-slate-700 text-center">
@@ -756,27 +716,19 @@
             </div>
         </div>
     </div>
-
     <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0"><div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-sm m-4 text-center border border-slate-700 transform scale-95 transition-transform duration-200" id="confirm-modal-panel"><h2 id="confirm-title" class="text-xl font-bold mb-2 text-white">Tem certeza?</h2><p id="confirm-message" class="text-slate-400 mb-6 text-sm"></p><div class="flex justify-center gap-3"><button id="confirm-btn-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 font-medium hover:bg-slate-700 transition w-24">Cancelar</button><button id="confirm-btn-yes" class="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm transition w-24">Confirmar</button></div></div></div>
-
     <div id="client-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0"><div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-md m-4 border border-slate-700 transform transition-all scale-95"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-white">Novo Cliente</h2><button type="button" id="client-modal-close-x" class="text-slate-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div><form id="client-form"><div class="mb-6"><label for="client-name" class="block text-sm font-medium text-slate-300 mb-1.5">Nome da Empresa</label><input type="text" id="client-name" class="block w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required></div><div class="flex justify-end gap-3 border-t border-slate-700 pt-4"><button type="button" id="client-modal-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 font-medium transition">Cancelar</button><button type="submit" id="client-modal-save" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Criar Cliente</button></div></form></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, query, getDocs, writeBatch, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- 1. FUNÇÕES UTILITÁRIAS GLOBAIS (DEFINIDAS PRIMEIRO) ---
-        
-        // Função segura para adicionar eventos (evita erros se o botão não existir)
         function safeBind(id, event, handler) {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener(event, handler);
             }
         }
-
-        // Função de Toast (Notificação)
         window.showToast = (message, type = 'success') => {
             const container = document.getElementById('toast-container');
             if(!container) return;
@@ -788,54 +740,36 @@
             requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
             setTimeout(() => { toast.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => container.removeChild(toast), 300); }, 3500);
         };
-
-        // Função de Copiar ID
         window.copyToClipboard = (text) => {
             navigator.clipboard.writeText(text).then(() => window.showToast("ID copiado!")).catch(() => window.showToast("Erro ao copiar ID", 'error'));
         };
-
-        // Função de Navegação Global (Com Memória)
         window.clickNavLink = function(target) {
-            // 1. Salva a aba atual na memória do navegador
             localStorage.setItem('appLog_lastPage', target);
-
-            // Esconde todas as páginas
             document.querySelectorAll('.page-content').forEach(p => { 
                 p.classList.remove('active'); 
                 p.classList.add('hidden'); 
             });
-            
-            // Mostra a página alvo
             const targetEl = document.getElementById(target); 
             if(targetEl) { 
                 targetEl.classList.remove('hidden'); 
                 targetEl.classList.add('active'); 
             }
-            
-            // Atualiza menu lateral
             document.querySelectorAll('.nav-link').forEach(l => { 
                 l.classList.remove('bg-slate-800', 'text-indigo-400', 'border-indigo-500', 'shadow-sm'); 
                 l.classList.add('text-slate-300', 'border-transparent', 'hover:text-white'); 
-            });
-            
+            });        
             const activeLink = document.querySelector(`[data-page="${target}"]`); 
             if(activeLink) { 
                 activeLink.classList.remove('text-slate-300', 'border-transparent', 'hover:text-white'); 
                 activeLink.classList.add('bg-slate-800', 'text-indigo-400', 'border-indigo-500', 'shadow-sm'); 
-            }
-            
-            // Fecha menu mobile se estiver aberto
+            }            
             if (window.innerWidth < 768) document.getElementById('sidebar-content').classList.add('hidden');
         };
-
-        // Função Voltar para Lista
         window.backToList = function() { 
             document.getElementById('client-edit-section').classList.add('hidden'); 
             document.getElementById('client-view-section').classList.add('hidden'); 
             document.getElementById('client-list-section').classList.remove('hidden'); 
         };
-
-        // Modal Confirm Global
         let pendingConfirmAction = null;
         window.openConfirmModal = (t,m,a) => { 
             document.getElementById('confirm-title').innerText=t; 
@@ -857,11 +791,7 @@
                 pendingConfirmAction=null;
             },200); 
         };
-
-        // --- 2. CONFIGURAÇÕES E VARIÁVEIS ---
-        
-        const ADMIN_IDS = ["25hMg4MiXENNs4H50TkWBxMZi5r2", "h2YvJ6pwruMAFCQaEghvuWB2uTY2"];
-        
+        const ADMIN_IDS = ["25hMg4MiXENNs4H50TkWBxMZi5r2", "h2YvJ6pwruMAFCQaEghvuWB2uTY2"];        
         const firebaseConfig = {
             apiKey: "AIzaSyABGUTSwBMEuNLmFDsNRHgXOo3NEs8Q21A",
             authDomain: "genapplog.firebaseapp.com",
@@ -872,14 +802,11 @@
         }; 
         const appId = firebaseConfig.appId;
         const initialAuthToken = null;
-
         let app, auth, db, userId, clientsCollection, occurrencesCollection;
         let unsubscribeClients = null;
         let unsubscribeOccurrences = null;
         let clientCache = new Map();
         let currentEditingClientId = null;
-        
-        // Variáveis do Módulo Ocorrências
         let allOccurrencesData = [];
         let filteredOccurrencesData = [];
         let pendingOccurrencesData = [];
@@ -889,63 +816,67 @@
         let chartIdentificadorInstance = null;
         let currentOccurrenceId = null; 
         let currentFormStatus = 'draft';
-
         let currentEnv = 'prod'; 
         const PROD_PATH = `artifacts/${appId}/public/data/clients`;
         const TEST_PATH = `artifacts/${appId}/public/data/clients_test`;
         const PROD_OC_PATH = `artifacts/${appId}/public/data/occurrences`;
 const TEST_OC_PATH = `artifacts/${appId}/public/data/occurrences_test`;
-
-        // LÓGICA DE DADOS PADRÃO
-        const defaultChecklistData = { alturaPalete: { directa: "1.80m", fracionada: "1.80m" }, multiplosSKU: { directa: "", fracionada: "", directaLimit: "", fracionadaLimit: "" }, multiplosLotes: { directa: "", fracionada: "", directaLimit: "", fracionadaLimit: "" }, multiplosPedidos: { directa: "Não", fracionada: "Não", directaLimit: "", fracionadaLimit: "" }, paletizacaoLastro: { directa: "", fracionada: "" }, paletizacaoTorre: { directa: "", fracionada: "" }, tipoPalete: { directa: "PBR", fracionada: "PBR" }, observacao: { directa: "", fracionada: "" } };
-        const checklistRowsConfig = [{ key: 'alturaPalete', label: 'Altura Palete' }, { key: 'multiplosSKU', label: 'Múltiplos SKU' }, { key: 'multiplosLotes', label: 'Múltiplos Lotes' }, { key: 'multiplosPedidos', label: 'Múltiplos Pedido / NF' }, { key: 'paletizacaoLastro', label: 'Paletização Lastro' }, { key: 'paletizacaoTorre', label: 'Paletização Torre' }, { key: 'tipoPalete', label: 'Tipo Palete' }, { key: 'observacao', label: 'Observação' }];
+        const defaultChecklistData = { alturaPalete: { directa: "1.80m", fracionada: "1.80m" }, 
+                                      multiplosSKU: { directa: "", fracionada: "", directaLimit: "", fracionadaLimit: "" },
+                                      multiplosLotes: { directa: "", fracionada: "", directaLimit: "", fracionadaLimit: "" },
+                                      multiplosPedidos: { directa: "Não", fracionada: "Não", directaLimit: "", fracionadaLimit: "" },
+                                      paletizacaoLastro: { directa: "", fracionada: "" },
+                                      paletizacaoTorre: { directa: "", fracionada: "" },
+                                      tipoPalete: { directa: "PBR", fracionada: "PBR" },
+                                      observacao: { directa: "", fracionada: "" } };
+        const checklistRowsConfig = [{ key: 'alturaPalete', label: 'Altura Palete' },
+                                     { key: 'multiplosSKU', label: 'Múltiplos SKU' },
+                                     { key: 'multiplosLotes', label: 'Múltiplos Lotes' },
+                                     { key: 'multiplosPedidos', label: 'Múltiplos Pedido / NF' },
+                                     { key: 'paletizacaoLastro', label: 'Paletização Lastro' },
+                                     { key: 'paletizacaoTorre', label: 'Paletização Torre' },
+                                     { key: 'tipoPalete', label: 'Tipo Palete' },
+                                     { key: 'observacao', label: 'Observação' }];
         const specificClientRules = { "AMAZON": { ...defaultChecklistData, observacao: { directa: "Exige agendamento prévio (CARP).", fracionada: "Exige agendamento prévio (CARP)." } } };
-        const cdData = { "GRU5": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000367", ie: "241099810118 ", linha1: "Cd Prologis 3: Av. Antonio Candido Machado", linha2: "3100 Andar 5, 07776415 - Cajamar - SP" }, "XBRA": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000448", ie: "241118709114 ", linha1: "Cd Prologis 2: Av. Dr. Joao Abdalla 260", linha2: "Bloco 400, 07776700 - Cajamar - SP" }, "XBRB": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000529", ie: "0842859-07 ", linha1: "Rd Br-101 Sul, 3791bl C, Galpão 5, Sl A", linha2: "54503010 - Cabo De Santo Agostinho - PE " }, "XBRT": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000871", ie: "241134643114 ", linha1: "Via De Acesso Norte KM 38, 420, Galpão 07 ", linha2: "Gleba A Bloco 07, 07789100 Cajamar - SP " }, "XBRZ": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000286", ie: "241115791117 ", linha1: "Cd Prologis 2: Av. Dr. Joao Abdalla 260", linha2: "Bloco 300, 07776700 Cajamar - SP" }, "CNF1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000952", ie: "002668590054 ", linha1: "Avenida Juiz Marco Tulio Isaac 7000", linha2: "32670250, Betim - MG" }, "BSB1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001096", ie: "0774927400365", linha1: "Rd Df, 290, Km 1.2 Lote 13,14,15,16 E 17 -", linha2: " 72501100, Brasilia - DF" }, "POA1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001177", ie: "3820025709 ", linha1: "Rua Da Pedreira, 64, Pavilhão 05", linha2: "92480000, Nova Santa Rita - RS" }, "GIG1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001410", ie: "11821987 ", linha1: "Av Arthur Antonio Sendas, S/N Area 6a", linha2: "25585021, Sao Joao De Meriti, RJ" }, "REC1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "11543694000150", ie: "0920380-00 ", linha1: "RD BR 101 SUL, 9415, Galpão B", linha2: "54503010 - Cabo De Santo Agostinho - PE " }, "FOR2": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001681", ie: "61268801 ", linha1: "Av Quarto Anel Viario, 4343", linha2: "61880000, Itaitinga - CE" } };
+        const cdData = { "GRU5": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000367", ie: "241099810118 ", linha1: "Cd Prologis 3: Av. Antonio Candido Machado", linha2: "3100 Andar 5, 07776415 - Cajamar - SP" },
+                         "XBRA": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000448", ie: "241118709114 ", linha1: "Cd Prologis 2: Av. Dr. Joao Abdalla 260", linha2: "Bloco 400, 07776700 - Cajamar - SP" },
+                         "XBRB": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000529", ie: "0842859-07   ", linha1: "Rd Br-101 Sul, 3791bl C, Galpão 5, Sl A", linha2: "54503010 - Cabo De Santo Agostinho - PE " },
+                         "XBRT": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000871", ie: "241134643114 ", linha1: "Via De Acesso Norte KM 38, 420, Galpão 07 ", linha2: "Gleba A Bloco 07, 07789100 Cajamar - SP " },
+                         "XBRZ": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000286", ie: "241115791117 ", linha1: "Cd Prologis 2: Av. Dr. Joao Abdalla 260", linha2: "Bloco 300, 07776700 Cajamar - SP" },
+                         "CNF1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940000952", ie: "002668590054 ", linha1: "Avenida Juiz Marco Tulio Isaac 7000", linha2: "32670250, Betim - MG" },
+                         "BSB1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001096", ie: "0774927400365", linha1: "Rd Df, 290, Km 1.2 Lote 13,14,15,16 E 17 -", linha2: " 72501100, Brasilia - DF" },
+                         "POA1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001177", ie: "3820025709   ", linha1: "Rua Da Pedreira, 64, Pavilhão 05", linha2: "92480000, Nova Santa Rita - RS" },
+                         "GIG1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001410", ie: "11821987     ", linha1: "Av Arthur Antonio Sendas, S/N Area 6a", linha2: "25585021, Sao Joao De Meriti, RJ" },
+                         "REC1": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "11543694000150", ie: "0920380-00   ", linha1: "RD BR 101 SUL, 9415, Galpão B", linha2: "54503010 - Cabo De Santo Agostinho - PE " },
+                         "FOR2": { nome: "Amazon Servicos de Varejo do Brasil Ltda", cnpj: "15436940001681", ie: "61268801     ", linha1: "Av Quarto Anel Viario, 4343", linha2: "61880000, Itaitinga - CE" } };
         const labelDimensions = { "4x6": { pw: 800, ll: 1200, aspect: "aspect-[2/3]" }, "4x4": { pw: 800, ll: 800, aspect: "aspect-square" }, "4x2": { pw: 800, ll: 400, aspect: "aspect-[2/1]" }, "4x3.15": { pw: 800, ll: 640, aspect: "aspect-[10/8]" } };
         const baseApiUrl = 'https://api.labelary.com/v1/printers/8dpmm/labels/';
-
-        // --- 3. LÓGICA E EVENTOS (AGORA QUE TUDO ESTÁ DEFINIDO) ---
-
         document.addEventListener('DOMContentLoaded', () => {
-            // Bindings do Menu Mobile
             document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
                 document.getElementById('sidebar-content').classList.toggle('hidden');
                 document.getElementById('sidebar-content').classList.toggle('flex');
             });
-            
-            // Bindings dos Links de Navegação
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', (e) => { 
                     e.preventDefault(); 
                     window.clickNavLink(link.dataset.page); 
                 });
             });
-            
-            // Logo volta para o Dashboard
             document.getElementById('app-logo-btn')?.addEventListener('click', () => window.clickNavLink('dashboard'));
-            
-            // --- NOVA LÓGICA: Recuperar última página acessada ---
             const lastPage = localStorage.getItem('appLog_lastPage') || 'dashboard';
-            
-            // Verifica se a página salva ainda existe (segurança)
             if (document.getElementById(lastPage)) {
                 window.clickNavLink(lastPage);
             } else {
                 window.clickNavLink('dashboard');
             }
-            
-            // Inicia App apenas após carregar DOM
             initApp();
         });
-
-        // --- FIREBASE LOGIC ---
         async function initApp() {
             try {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
-                if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken); else await signInAnonymously(auth);
-                
+                if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken); else await signInAnonymously(auth);  
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
@@ -954,27 +885,18 @@ const TEST_OC_PATH = `artifacts/${appId}/public/data/occurrences_test`;
                         updateUIForRole(isAdmin);
                         const savedEnv = localStorage.getItem('appLog_env') || 'prod';
 setEnvironment(savedEnv);
-                        
-                        // Inicializa coleção de Ocorrências (Sempre Produção)
                         occurrencesCollection = collection(db, PROD_OC_PATH);
                         loadOccurrencesData();
                     }
                 });
             } catch (e) { console.error(e); window.showToast("Erro conexão Firebase", 'error'); }
         }
-
-        // --- OCCURRENCES MODULE LOGIC ---
         async function loadOccurrencesData() {
-    // 1. Limpa ouvintes anteriores para não duplicar
     if(unsubscribeOccurrences) { unsubscribeOccurrences(); unsubscribeOccurrences = null; }
-
     const isTest = currentEnv === 'test';
     let prodDataMap = new Map();
-
-    // 2. Se estiver em TESTE, busca uma "fotografia" dos dados de Produção
     if (isTest) {
         try {
-            // Busca dados de produção apenas para leitura (snapshot único)
             const prodSnapshot = await getDocs(collection(db, PROD_OC_PATH));
             prodSnapshot.forEach(docSnap => {
                 const d = docSnap.data();
@@ -988,42 +910,28 @@ setEnvironment(savedEnv);
             console.error("Erro ao carregar cópia de produção:", e);
         }
     }
-
-    // 3. Ouve a coleção ativa (Se for teste, ouve a 'occurrences_test', se prod, 'occurrences')
     unsubscribeOccurrences = onSnapshot(occurrencesCollection, (snapshot) => {
         allOccurrencesData = [];
         pendingOccurrencesData = [];
-        
-        // Mapa para garantir que a versão de Teste (editada) tenha prioridade sobre a cópia de Prod
         const finalDataMap = new Map(prodDataMap); 
-
         snapshot.forEach(docSnap => {
             const d = docSnap.data();
             d.id = docSnap.id;
             d.jsDate = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate() : new Date(d.createdAt);
-            d.isProdCopy = false; // Este é um dado real do ambiente atual
-            
-            // Sobrescreve a cópia de produção se existir (editou no teste -> vale o teste)
+            d.isProdCopy = false;
             finalDataMap.set(d.id, d);
         });
-
-        // Converte o Mapa final de volta para lista
         const combinedData = Array.from(finalDataMap.values());
-
-        // Separa e Ordena
         combinedData.forEach(d => {
             if (d.status === 'concluido') allOccurrencesData.push(d);
             else pendingOccurrencesData.push(d);
         });
-
         allOccurrencesData.sort((a, b) => b.jsDate - a.jsDate);
         pendingOccurrencesData.sort((a, b) => b.jsDate - a.jsDate);
-
         updateDashboard();
         updatePendingList();
     });
 }
-
         function updatePendingList() {
             const tbody = document.getElementById('pending-list-tbody');
             if(!tbody) return;
@@ -1034,12 +942,16 @@ setEnvironment(savedEnv);
                 tr.className = "border-b border-slate-700 hover:bg-slate-750 transition-colors";
                 let statusBadge = item.status === 'pendente_lider' ? '<span class="badge-pending">Aguard. Líder</span>' : item.status === 'pendente_inventario' ? '<span class="badge-blue">Aguard. Inventário</span>' : '<span class="text-xs text-slate-500">Rascunho</span>';
                 let actionText = item.status === 'pendente_lider' ? 'Assinar (Líder)' : item.status === 'pendente_inventario' ? 'Revisar e Finalizar' : 'Continuar';
-                tr.innerHTML = `<td class="px-4 py-3 text-slate-300 font-mono text-xs">${item.jsDate.toLocaleDateString('pt-BR')}</td><td class="px-4 py-3 text-white font-medium">${item.embarque || '-'} / ${item.nf || '-'}</td><td class="px-4 py-3 text-slate-300 text-xs">${item.tipo}</td><td class="px-4 py-3">${statusBadge}</td><td class="px-4 py-3 text-right"><button class="text-indigo-400 hover:text-white text-xs font-bold uppercase tracking-wide bg-indigo-900/30 px-3 py-1.5 rounded border border-indigo-500/30 hover:bg-indigo-600 hover:border-indigo-500 transition-all btn-open-occurrence" data-id="${item.id}">${actionText}</button></td>`;
+                tr.innerHTML = `<td class="px-4 py-3 text-slate-300 font-mono text-xs">
+                ${item.jsDate.toLocaleDateString('pt-BR')}</td><td class="px-4 py-3 text-white font-medium">
+                ${item.embarque || '-'} / ${item.nf || '-'}</td><td class="px-4 py-3 text-slate-300 text-xs">
+                ${item.tipo}</td><td class="px-4 py-3">
+                ${statusBadge}</td><td class="px-4 py-3 text-right"><button class="text-indigo-400 hover:text-white text-xs font-bold uppercase tracking-wide bg-indigo-900/30 px-3 py-1.5 rounded border border-indigo-500/30 hover:bg-indigo-600 hover:border-indigo-500 transition-all btn-open-occurrence" data-id="
+                ${item.id}">${actionText}</button></td>`;
                 tbody.appendChild(tr);
             });
             document.querySelectorAll('.btn-open-occurrence').forEach(btn => btn.addEventListener('click', (e) => openOccurrenceForEdit(e.target.dataset.id)));
         }
-
         function updateDashboard() { applyDashboardFilters(); }
         function applyDashboardFilters() {
             const startVal = document.getElementById('dash-filter-start').value;
@@ -1053,7 +965,6 @@ setEnvironment(savedEnv);
             });
             updateChartsAndStats(filteredOccurrencesData);
         }
-
         function updateChartsAndStats(data) {
             let total = data.length;
             let types = { FALTA: 0, SOBRA: 0, AVARIA: 0, FALTA_INTERNA: 0 };
@@ -1069,31 +980,31 @@ setEnvironment(savedEnv);
             document.getElementById('dash-last-date').innerText = (total > 0 && data[0].jsDate) ? data[0].jsDate.toLocaleDateString('pt-BR') : "-";
             let maxType = "-", maxVal = -1; for(const [k, v] of Object.entries(types)) if(v > maxVal && v > 0) { maxVal = v; maxType = k; }
             document.getElementById('dash-top-type').innerText = maxType;
-
             const updateChart = (id, type, labels, data, bg, instance) => {
                 const ctx = document.getElementById(id);
                 if(instance) instance.destroy();
-                return new Chart(ctx, { type, data: { labels, datasets: [{ label: 'Qtd', data, backgroundColor: bg, borderWidth: 0, borderRadius: 4 }] }, options: { indexAxis: type === 'bar' && id.includes('Causador') ? 'y' : 'x', responsive: true, plugins: { legend: { display: type === 'doughnut', position: 'bottom', labels: { color: '#cbd5e1' } } }, scales: type === 'bar' ? { y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } }, x: { grid: { display: false }, ticks: { color: '#cbd5e1' } } } : {} } });
+                return new Chart(ctx, { type, data: { labels, datasets: [{ label: 'Qtd', data, backgroundColor: bg, borderWidth: 0, borderRadius: 4 }] }, 
+                                       options: { indexAxis: type === 'bar' && id.includes('Causador') ? 'y' : 'x', responsive: true, plugins: { legend: { display: type === 'doughnut', position: 'bottom', labels: { color: '#cbd5e1' } } }, 
+                                       scales: type === 'bar' ? { y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } }, x: { grid: { display: false }, ticks: { color: '#cbd5e1' } } } : {} } });
             };
-
             chartTypeInstance = updateChart('chartOcType', 'doughnut', ['Falta', 'Sobra', 'Avaria', 'Falta Interna'], [types.FALTA, types.SOBRA, types.AVARIA, types.FALTA_INTERNA], ['#ef4444', '#3b82f6', '#f59e0b', '#a855f7'], chartTypeInstance);
             chartLocalInstance = updateChart('chartOcLocal', 'bar', ['Armazenagem', 'Estoque', 'Checkout', 'Separação'], [locals.ARMAZENAGEM, locals.ESTOQUE, locals.CHECKOUT, locals.SEPARAÇÃO], '#6366f1', chartLocalInstance);
-            
             const sortObj = (obj) => Object.entries(obj).sort((a, b) => b[1] - a[1]).slice(0, 10);
             const sCaus = sortObj(causadores);
-            chartCausadorInstance = new Chart(document.getElementById('chartOcCausador'), { type: 'bar', data: { labels: sCaus.map(i=>i[0]), datasets: [{ data: sCaus.map(i=>i[1]), backgroundColor: '#f43f5e', borderRadius: 4, barThickness: 20 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1', stepSize: 1 } }, y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 10 } } } } } });
+            chartCausadorInstance = new Chart(document.getElementById('chartOcCausador'), 
+                                              { type: 'bar', data: { labels: sCaus.map(i=>i[0]), datasets: [{ data: sCaus.map(i=>i[1]), backgroundColor: '#f43f5e', borderRadius: 4, barThickness: 20 }] }, 
+                                               options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1', stepSize: 1 } }, y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 10 } } } } } });
             const sIdent = sortObj(identificadores);
-            chartIdentificadorInstance = new Chart(document.getElementById('chartOcIdentificador'), { type: 'bar', data: { labels: sIdent.map(i=>i[0]), datasets: [{ data: sIdent.map(i=>i[1]), backgroundColor: '#10b981', borderRadius: 4, barThickness: 20 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1', stepSize: 1 } }, y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 10 } } } } } });
+            chartIdentificadorInstance = new Chart(document.getElementById('chartOcIdentificador'), 
+                                                   { type: 'bar', data: { labels: sIdent.map(i=>i[0]), datasets: [{ data: sIdent.map(i=>i[1]), backgroundColor: '#10b981', borderRadius: 4, barThickness: 20 }] },
+                                                    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1', stepSize: 1 } }, y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 10 } } } } } });
         }
-
-        // --- FORM HELPERS ---
         function resetForm() {
             currentOccurrenceId = null; currentFormStatus = 'draft';
             document.querySelectorAll('#ocorrencias-novo input, #ocorrencias-novo textarea').forEach(i => { if(i.type === 'radio' || i.type === 'checkbox') i.checked = false; else i.value = ''; i.disabled = false; });
             document.getElementById('form-data').valueAsDate = new Date();
             updateFormStateUI();
         }
-
         function openOccurrenceForEdit(id) {
             const item = pendingOccurrencesData.find(d => d.id === id); if (!item) return;
             currentOccurrenceId = id; currentFormStatus = item.status;
@@ -1107,18 +1018,15 @@ setEnvironment(savedEnv);
             document.getElementById('ocorrencias-menu-view').classList.add('hidden');
             document.getElementById('ocorrencias-novo').classList.remove('hidden');
         }
-
         function updateFormStateUI() {
             const status = currentFormStatus;
             const statusBar = document.getElementById('form-status-bar');
             const dataInputs = document.querySelectorAll('.data-input');
             const inputColab = document.getElementById('form-ass-colab'), inputLider = document.getElementById('form-ass-lider'), inputInv = document.getElementById('form-ass-inv'), inputInfrator = document.getElementById('form-infrator'), btnSave = document.getElementById('btn-save-occurrence'), descAction = document.getElementById('form-action-desc');
-            
             inputColab.disabled = true; inputColab.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
             inputLider.disabled = true; inputLider.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
             inputInv.disabled = true; inputInv.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
             dataInputs.forEach(input => input.disabled = false);
-
             if (status === 'draft') {
                 statusBar.innerText = "Etapa 1: Preenchimento Inicial"; statusBar.className = "bg-indigo-900/50 text-indigo-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/30";
                 inputInfrator.disabled = true; inputInfrator.placeholder = "Reservado ao Inventário"; inputInfrator.classList.add('opacity-50');
@@ -1137,17 +1045,14 @@ setEnvironment(savedEnv);
                 btnSave.innerText = "Assinar e Finalizar Relatório"; descAction.innerText = "Esta ação concluirá o relatório e o enviará para o Dashboard.";
             }
         }
-
-        // --- BOTÕES DO MÓDULO DE OCORRÊNCIAS ---
         safeBind('btn-open-oc-dashboard', 'click', () => { document.getElementById('ocorrencias-menu-view').classList.add('hidden'); document.getElementById('ocorrencias-dashboard').classList.remove('hidden'); updateDashboard(); });
         safeBind('btn-open-oc-novo', 'click', () => { document.getElementById('ocorrencias-menu-view').classList.add('hidden'); document.getElementById('ocorrencias-novo').classList.remove('hidden'); resetForm(); });
         safeBind('btn-back-oc-dash', 'click', () => { document.getElementById('ocorrencias-dashboard').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-back-oc-form', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-cancel-occurrence', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-dash-filter-apply', 'click', applyDashboardFilters);
-        safeBind('btn-dash-filter-clear', () => { document.getElementById('dash-filter-start').value = ''; document.getElementById('dash-filter-end').value = ''; applyDashboardFilters(); });
+        safeBind('btn-dash-filter-clear', 'click', () => { document.getElementById('dash-filter-start').value = ''; document.getElementById('dash-filter-end').value = ''; applyDashboardFilters();  });
         safeBind('download-template-btn', 'click', () => {
-    // Estrutura exata fornecida
     const templateData = [
       {
         "name": "4 ELOS",
@@ -1193,8 +1098,6 @@ setEnvironment(savedEnv);
         }
       }
     ];
-
-    // Cria o arquivo e força o download
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(templateData, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
@@ -1203,57 +1106,41 @@ setEnvironment(savedEnv);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 });
-      // --- Lógica de Importação (Atualização Inteligente / Upsert) ---
 safeBind('file-upload', 'change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const statusDiv = document.getElementById('import-status');
     const statusText = document.getElementById('import-status-text');
-    
     statusDiv.classList.remove('hidden');
     statusText.innerText = "Analisando arquivo...";
     statusText.className = "text-sm text-yellow-400 font-mono";
-
     const reader = new FileReader();
-    
     reader.onload = async (event) => {
         try {
             const jsonContent = event.target.result;
             const data = JSON.parse(jsonContent);
-
             if (!Array.isArray(data)) {
                 throw new Error("O arquivo JSON deve ser uma lista.");
             }
-
             statusText.innerText = `Processando ${data.length} registros...`;
-            
-            // 1. Cria um mapa de nomes existentes para busca rápida
-            // Transforma: { "id123": {name: "CLIENTE A"} } -> Map { "CLIENTE A" => "id123" }
             const existingNamesMap = new Map();
             clientCache.forEach((value, key) => {
                 if(value.name) existingNamesMap.set(value.name.toUpperCase().trim(), key);
             });
-
             const batch = writeBatch(db);
             let createdCount = 0;
             let updatedCount = 0;
-
             data.forEach(client => {
                 if (client.name) {
                     const normalizedName = client.name.toString().toUpperCase().trim();
                     const existingId = existingNamesMap.get(normalizedName);
-
                     if (existingId) {
-                        // --- CENÁRIO 1: ATUALIZAR (Cliente já existe) ---
                         const docRef = doc(clientsCollection, existingId);
                         batch.update(docRef, {
                             checklist: client.checklist || defaultChecklistData
-                            // Não atualizamos o nome para manter o ID consistente, apenas o checklist
                         });
                         updatedCount++;
                     } else {
-                        // --- CENÁRIO 2: CRIAR (Cliente novo) ---
                         const newDocRef = doc(clientsCollection);
                         batch.set(newDocRef, {
                             name: normalizedName,
@@ -1263,20 +1150,14 @@ safeBind('file-upload', 'change', (e) => {
                     }
                 }
             });
-
             if (createdCount === 0 && updatedCount === 0) throw new Error("Nenhum dado válido.");
-
-            statusText.innerText = `Salvando: ${createdCount} novos, ${updatedCount} atualizados...`;
-            
+            statusText.innerText = `Salvando: ${createdCount} novos, ${updatedCount} atualizados...`;           
             await batch.commit();
-
             window.showToast(`Sucesso! ${createdCount} criados, ${updatedCount} atualizados.`);
             statusText.innerText = "Importação concluída!";
-            statusText.className = "text-sm text-emerald-400 font-mono";
-            
+            statusText.className = "text-sm text-emerald-400 font-mono";           
             e.target.value = '';
             setTimeout(() => statusDiv.classList.add('hidden'), 4000);
-
         } catch (err) {
             console.error(err);
             window.showToast("Erro: " + err.message, 'error');
@@ -1285,29 +1166,22 @@ safeBind('file-upload', 'change', (e) => {
             e.target.value = '';
         }
     };
-
     reader.onerror = () => { window.showToast("Erro de leitura.", 'error'); };
     reader.readAsText(file);
-});
-        
+});        
         safeBind('btn-dash-export', 'click', () => {
     if (filteredOccurrencesData.length === 0) {
         window.showToast("Nenhum dado para exportar.", "error");
         return;
     }
-
-    // Mapeamento dos dados para as colunas solicitadas
     const exportData = filteredOccurrencesData.map(d => {
         const dateObj = d.jsDate || new Date();
-        
-        // Monta string de detalhes da embalagem para a coluna "TIPO OCORRENCIA"
         let detalhesEmb = [];
         if(d.emb_amassada) detalhesEmb.push("Amassada");
         if(d.emb_rasgada) detalhesEmb.push("Rasgada");
         if(d.emb_vazamento) detalhesEmb.push("Vazamento");
         if(d.emb_outros) detalhesEmb.push(d.emb_outros);
         const tipoDetalhado = detalhesEmb.length > 0 ? detalhesEmb.join(", ") : "N/A";
-
         return {
             "DATA": dateObj.toLocaleDateString('pt-BR'),
             "MÊS": dateObj.toLocaleString('pt-BR', { month: 'long' }).toUpperCase(),
@@ -1315,7 +1189,7 @@ safeBind('file-upload', 'change', (e) => {
             "CAUSADOR": d.infrator || '-',
             "IDENTIFICADOR": d.ass_colab || '-',
             "LOCAL": d.local || '-',
-            "OCORRENCIA": d.tipo || '-',       // Ex: FALTA, SOBRA, AVARIA
+            "OCORRENCIA": d.tipo || '-',       
             "EMBARQUE": d.embarque || '-',
             "NOTA FISCAL": d.nf || '-',
             "ITEM CODIGO": d.item_cod || '-',
@@ -1323,23 +1197,18 @@ safeBind('file-upload', 'change', (e) => {
             "ITEM LOTE": d.item_lote || '-',
             "ITEM QTD": d.item_qtd || '0',
             "END ORIGEM": d.item_end || '-',
-            "TIPO OCORRENCIA": tipoDetalhado,  // Detalhes da embalagem
+            "TIPO OCORRENCIA": tipoDetalhado,  
             "LIDER": d.ass_lider || '-',
             "INVENTÁRIO": d.ass_inv || '-',
             "OBSERVAÇÕES": d.obs || '-'
         };
     });
-
-    // Gera o arquivo Excel
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Relatorio_Ocorrencias");
-    
-    // Nome do arquivo com data/hora para não sobrescrever
     const fileName = `relatorio_ocorrencias_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.xlsx`;
     XLSX.writeFile(wb, fileName);
 });
-
         safeBind('btn-save-occurrence', 'click', async () => {
             const btn = document.getElementById('btn-save-occurrence'); btn.disabled = true; btn.innerText = "Processando...";
             try {
@@ -1358,34 +1227,23 @@ safeBind('file-upload', 'change', (e) => {
                 window.showToast("Relatório salvo!"); document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden');
             } catch(e) { console.error(e); window.showToast(e.message || "Erro.", "error"); } finally { btn.disabled = false; btn.innerText = "Salvar e Assinar"; }
         });
-
-        // --- COMMON LOGIC (Navegação, etc) ---
         function updateUIForRole(isAdmin) {
             const els = { label: document.getElementById('user-role-label'), indicator: document.getElementById('admin-indicator'), addBtn: document.getElementById('add-client-btn'), resetBtn: document.getElementById('btn-reset-db'), applyBtn: document.getElementById('btn-apply-rules'), dangerZone: document.getElementById('admin-danger-zone'), navConfig: document.getElementById('nav-link-config') };
             if (isAdmin) { els.label.innerText = "Admin (Teste)"; els.label.classList.add('text-green-400'); els.indicator.classList.remove('hidden'); els.addBtn.classList.remove('hidden'); els.dangerZone.classList.remove('hidden'); if(els.navConfig) els.navConfig.classList.remove('hidden'); }
             else { els.label.innerText = "Leitor"; els.label.classList.add('text-slate-400'); els.indicator.classList.add('hidden'); els.addBtn.classList.add('hidden'); els.dangerZone.classList.add('hidden'); if(els.navConfig) els.navConfig.classList.add('hidden'); }
         }
-
         function setEnvironment(env) {
-    // 1. Limpa os "ouvintes" (listeners) antigos para não misturar dados
     if(unsubscribeClients) { unsubscribeClients(); unsubscribeClients = null; }
     if(unsubscribeOccurrences) { unsubscribeOccurrences(); unsubscribeOccurrences = null; }
-
     currentEnv = env;
     const isTest = env === 'test';
-
-    // 2. Define os caminhos baseados no ambiente
     const clientPath = isTest ? TEST_PATH : PROD_PATH;
     const ocPath = isTest ? TEST_OC_PATH : PROD_OC_PATH;
-
-    // 3. Atualiza as referências das coleções
     clientsCollection = collection(db, clientPath);
     occurrencesCollection = collection(db, ocPath);
-
-    // 4. Atualiza a Interface e reinicia a leitura dos dados
     updateEnvUI(env);
-    startDataListener();     // Recarrega Clientes
-    loadOccurrencesData();   // <--- AQUI ESTAVA O ERRO "();"
+    startDataListener();     
+    loadOccurrencesData();   
 }
         function updateEnvUI(env) {
             const isTest = env === 'test';
@@ -1396,13 +1254,11 @@ safeBind('file-upload', 'change', (e) => {
             document.getElementById('env-toggle').checked = isTest;
             document.getElementById('client-list-tbody').innerHTML = '<tr><td colspan="2" class="px-6 py-12 text-center text-slate-400"><div class="flex justify-center items-center gap-2"><span class="spinner spinner-dark"></span><span>Carregando ambiente...</span></div></td></tr>';
         }
-
         safeBind('env-toggle', 'change', (e) => {
     const newEnv = e.target.checked ? 'test' : 'prod';
     localStorage.setItem('appLog_env', newEnv); // Salva na memória
     setEnvironment(newEnv);
 });
-        
         async function startDataListener() {
             try {
                 unsubscribeClients = onSnapshot(query(clientsCollection), (snapshot) => {
@@ -1411,7 +1267,6 @@ safeBind('file-upload', 'change', (e) => {
                 });
             } catch(e) { console.error(e); }
         }
-
         function filterAndRenderClients() {
             const term = document.getElementById('client-search').value.toLowerCase().trim();
             const clearBtn = document.getElementById('clear-search-btn'); if(clearBtn) clearBtn.classList.toggle('hidden', term.length === 0);
@@ -1421,53 +1276,41 @@ safeBind('file-upload', 'change', (e) => {
             const isAdmin = userId && ADMIN_IDS.includes(userId);
             filtered.forEach(c => {
                 const tr = document.createElement('tr'); tr.className = "hover:bg-slate-800 transition-colors border-b border-slate-700";
-                const actions = isAdmin ? `<div class="flex justify-end items-center gap-4"><button class="text-slate-400 hover:text-white font-medium action-view transition-colors" data-id="${c.id}">Visualizar</button><button class="text-indigo-400 hover:text-indigo-300 font-medium action-edit transition-colors" data-id="${c.id}">Editar</button><button class="text-red-400 hover:text-red-300 font-medium action-delete transition-colors" data-id="${c.id}" data-name="${c.name}">Excluir</button></div>` : `<div class="flex justify-end items-center"><button class="text-slate-400 hover:text-indigo-400 font-medium action-view" data-id="${c.id}">Visualizar</button></div>`;
+                const actions = isAdmin ? `<div class="flex justify-end items-center gap-4"><button class="text-slate-400 hover:text-white font-medium action-view transition-colors" data-id="
+                ${c.id}">Visualizar</button><button class="text-indigo-400 hover:text-indigo-300 font-medium action-edit transition-colors" data-id="
+                ${c.id}">Editar</button><button class="text-red-400 hover:text-red-300 font-medium action-delete transition-colors" data-id="
+                ${c.id}" data-name="${c.name}">Excluir</button></div>` : `<div class="flex justify-end items-center"><button class="text-slate-400 hover:text-indigo-400 font-medium action-view" data-id="
+                ${c.id}">Visualizar</button></div>`;
                 tr.innerHTML = `<td class="px-6 py-4 text-sm font-medium text-white">${c.name}</td><td class="px-6 py-4 text-right text-sm">${actions}</td>`;
                 tbody.appendChild(tr);
             });
         }
-        
-        // ZPL Handlers
         safeBind('btn-open-amazon', 'click', () => { document.getElementById('zpl-menu').classList.add('hidden'); document.getElementById('zpl-tool-amazon').classList.remove('hidden'); });
         safeBind('btn-back-zpl', 'click', () => { document.getElementById('zpl-tool-amazon').classList.add('hidden'); document.getElementById('zpl-menu').classList.remove('hidden'); });
         safeBind('btn-open-manual', 'click', () => { document.getElementById('zpl-menu').classList.add('hidden'); document.getElementById('zpl-tool-manual').classList.remove('hidden'); });
         safeBind('btn-back-zpl-manual', 'click', () => { document.getElementById('zpl-tool-manual').classList.add('hidden'); document.getElementById('zpl-menu').classList.remove('hidden'); });
-        
-        // Lógica ZPL (Resumida para caber)
         function scaleY(val, ll) { const h=1200; if(ll===h)return val; const s=Math.round((val/h)*ll); return s<1?1:s; }
         function generateZplTemplate(d,c,cl,nf,po,va,vt){ const v=`${va}/${vt}`,l=d.ll; return `^XA^CI28^PW${d.pw}^LL${d.ll}^LH0,0^PO^FWB^FX BORDAS^FO10,${scaleY(10,l)}^GB780,${scaleY(1180,l)},3^FS^FO20,${scaleY(20,l)}^GB40,${scaleY(575,l)},3^FS^FO20,${scaleY(605,l)}^GB40,${scaleY(575,l)},3^FS^FO70,${scaleY(20,l)}^GB220,${scaleY(575,l)},3^FS^FO70,${scaleY(605,l)}^GB220,${scaleY(575,l)},3^FS^FO300,${scaleY(20,l)}^GB40,${scaleY(575,l)},3^FS^FO300,${scaleY(605,l)}^GB40,${scaleY(575,l)},3^FS^FO350,${scaleY(20,l)}^GB180,${scaleY(575,l)},3^FS^FO350,${scaleY(605,l)}^GB180,${scaleY(575,l)},3^FS^FO540,${scaleY(20,l)}^GB40,${scaleY(1160,l)},3^FS^FO590,${scaleY(20,l)}^GB190,${scaleY(1160,l)},3^FS^CFA,30^FO30,${scaleY(810,l)}^FH^FDEndereco de destino:^FS^CFA,20^FO90,${scaleY(990,l)}^FH^FDAmazon CD: ${c}^FS^FO120,${scaleY(690,l)}^FH^FD${cl.nome}^FS^FO150,${scaleY(930,l)}^FH^FDCNPJ: ${cl.cnpj}^FS^FO180,${scaleY(965,l)}^FH^FDIE: ${cl.ie}^FS^FO210,${scaleY(665,l)}^FH^FD${cl.linha1}^FS^FO240,${scaleY(685,l)}^FH^FD${cl.linha2}^FS^CFA,30^FO30,${scaleY(170,l)}^FH^FDEndereco do fornecedor:^FS^CFA,20^FO150,${scaleY(135,l)}^FH^FDESTRADA MUNICIPAL LUIZ LOPES NETO, 21^FS^FO180,${scaleY(305,l)}^FH^FDEXTREMA - MG, 37640-050^FS^CFA,30^FO310,${scaleY(860,l)}^FH^FDPedido de compra:^FS^BY2,3,${scaleY(100,l)}^FO380,${scaleY(740,l)}^BC,${scaleY(110,l)},,,,N^FH^FD${po}^FS^CFA,30^FO310,${scaleY(280,l)}^FH^FDNumero de caixas:^FS^CFA,${scaleY(100,l)}^FO400,${scaleY(120,l)},^A0B,${scaleY(100,l)},${scaleY(100,l)}^FB400,1,0,C,0^FH^FD${v}\\&^FS^CFA,30^FO550,${scaleY(950,l)}^FH^FDNota fiscal:^FS^BY2,3,${scaleY(130,l)}^FO620,${scaleY(80,l)}^BC,${scaleY(120,l)},,,,N^FH^FD${nf}^FS^XZ`; }
         function generateZplManualTemplate(d){ return `^XA^MMT^PW799^LL640^LS1^FO15,55^GB767,4,4^FS^FO15,115^GB767,4,4^FS^FO15,270^GB767,4,4^FS^FO15,440^GB767,4,4^FS^FO15,520^GB767,4,4^FS^FT15,45^A0N,34,33^FH\\^FDGENOMMA MG ^FS^FT15,80^A0N,17,16^FH\\^FDDocumento^FS^FT100,105^A0N,34,33^FH\\^FD${d.documento}^FS^FT415,80^A0N,17,16^FH\\^FDSolicitante^FS^FT500,105^A0N,34,33^FH\\^FD${d.solicitante}^FS^FT15,155^A0N,17,16^FH\\^FDNota Fiscal^FS^FT280,240^A0N,100,100^FH\\^FD${d.nf}^FS^FT15,305^A0N,17,16^FH\\^FDDestinatario^FS^FT15,355^A0N,34,33^FH\\^FD${d.destinatario}^FS^FT15,400^A0N,23,24^FH\\^FD${d.cidade}^FS^FT15,510^A0N,34,33^FH\\^FD${d.transportadora}^FS^FT15,470^A0N,17,16^FH\\^FDTransportador^FS^FT15,555^A0N,17,16^FH\\^FDVolumes^FS^FT55,595^A0N,34,33^FH\\^FD${d.volAtual} / ${d.volTotal} CAIXA^FS^XZ`; }
-
         safeBind('generateButton', 'click', async () => { /* (Lógica ZPL Amazon mantida) */ const b=document.getElementById('generateButton'),p=document.getElementById('printButton'),c=document.getElementById('previewContainer'),z=document.getElementById('zplCode'); const t=document.getElementById('selectTamanho').value,d=labelDimensions[t],cd=document.getElementById('selectCdAmazon').value,cl=cdData[cd],nf=document.getElementById('inputChaveNf').value,po=document.getElementById('inputPedido').value,qt=parseInt(document.getElementById('inputQuantidadeTotal').value),ci=parseInt(document.getElementById('inputCaixaInicial').value),cf=parseInt(document.getElementById('inputCaixaFinal').value); if(!cl){window.showToast("CD inválido",'error');return;} if(isNaN(ci)||isNaN(cf)||isNaN(qt)){window.showToast("Preencha números",'error');return;} let az=""; for(let i=ci;i<=cf;i++)az+=generateZplTemplate(d,cd,cl,nf,po,i,qt); z.value=az; const pz=generateZplTemplate(d,cd,cl,nf,po,ci,qt); b.disabled=true;b.innerText='Gerando...';c.innerHTML='<span class="spinner"></span>'; try{const r=await fetch(baseApiUrl+t+'/0/',{method:'POST',headers:{'Accept':'image/png','Content-Type':'application/x-www-form-urlencoded'},body:pz}); if(r.ok){const u=URL.createObjectURL(await r.blob()); c.innerHTML=''; const i=document.createElement('img'); i.src=u; i.className='w-full h-full object-contain bg-white rounded-lg'; c.appendChild(i); p.disabled=false;}else{c.innerHTML='<span class="text-red-400 text-xs">Erro API</span>';}}catch{c.innerHTML='<span class="text-red-400 text-xs">Erro Rede</span>';}finally{b.disabled=false;b.innerText='Gerar ZPL e Visualizar';}});
         safeBind('printButton', 'click', async () => { /* (Lógica Print Amazon mantida) */ const z=document.getElementById('zplCode').value,t=document.getElementById('selectTamanho').value,b=document.getElementById('printButton'); if(!z)return; b.disabled=true; try{const r=await fetch(baseApiUrl+t+'/',{method:'POST',headers:{'Accept':'application/pdf','Content-Type':'application/x-www-form-urlencoded'},body:z}); if(r.ok)window.open(URL.createObjectURL(await r.blob()),'_blank');}catch{window.showToast("Erro PDF",'error');}finally{b.disabled=false;} });
         safeBind('generateButtonManual', 'click', async () => { /* (Lógica ZPL Manual mantida) */ const b=document.getElementById('generateButtonManual'),p=document.getElementById('printButtonManual'),c=document.getElementById('previewContainerManual'),z=document.getElementById('zplCodeManual'); const tm="4x3.15",d=labelDimensions[tm],dv=document.getElementById('inputManualDocumento').value,nf=document.getElementById('inputManualNf').value,sl=document.getElementById('inputManualSolicitante').value,dt=document.getElementById('inputManualDestinatario').value,ci=document.getElementById('inputManualCidade').value,tr=document.getElementById('inputManualTransportadora').value,qt=parseInt(document.getElementById('inputManualQtdTotal').value)||0,vi=parseInt(document.getElementById('inputManualCaixaIni').value)||1,vf=parseInt(document.getElementById('inputManualCaixaFim').value)||1; if(qt<=0){window.showToast("Qtd inválida",'error');return;} let ac=""; for(let i=vi;i<=vf;i++)ac+=generateZplManualTemplate({documento:dv,nf:nf,solicitante:sl,destinatario:dt,cidade:ci,transportadora:tr,volAtual:i,volTotal:qt}); z.value=ac; b.disabled=true;b.innerText='Gerando...';c.innerHTML='<span class="spinner"></span>'; try{const r=await fetch(baseApiUrl+tm+'/0/',{method:'POST',headers:{'Accept':'image/png','Content-Type':'application/x-www-form-urlencoded'},body:generateZplManualTemplate({documento:dv,nf:nf,solicitante:sl,destinatario:dt,cidade:ci,transportadora:tr,volAtual:vi,volTotal:qt})}); if(r.ok){const u=URL.createObjectURL(await r.blob()); c.innerHTML=`<img src="${u}" class="w-full h-full object-contain bg-white rounded-lg">`; p.disabled=false;}else{c.innerHTML='<span class="text-red-400 text-xs">Erro API</span>';}}catch{c.innerHTML='<span class="text-red-400 text-xs">Erro Rede</span>';}finally{b.disabled=false;b.innerText='Gerar ZPL e Visualizar';}});
         safeBind('printButtonManual', 'click', async () => { const z=document.getElementById('zplCodeManual').value,tm="4x3.15",b=document.getElementById('printButtonManual'); if(!z)return; b.disabled=true; try{const r=await fetch(baseApiUrl+tm+'/',{method:'POST',headers:{'Accept':'application/pdf','Content-Type':'application/x-www-form-urlencoded'},body:z}); if(r.ok)window.open(URL.createObjectURL(await r.blob()),'_blank');}catch{window.showToast("Erro PDF",'error');}finally{b.disabled=false;} });
-
-        // Event Listeners Genéricos (Busca, Modal, etc)
         safeBind('client-search', 'input', filterAndRenderClients);
         safeBind('clear-search-btn', 'click', () => { document.getElementById('client-search').value = ''; filterAndRenderClients(); });
-        document.getElementById('client-list-tbody')?.addEventListener('click', (e) => { const btn=e.target.closest('button'); if(!btn)return; const id=btn.dataset.id; if(btn.classList.contains('action-edit')) showEditMode(id); if(btn.classList.contains('action-view')) showViewMode(id); if(btn.classList.contains('action-delete')) window.openConfirmModal("Excluir?", "Ação irreversível.", async () => { await deleteDoc(doc(clientsCollection, id)); window.showToast("Removido."); window.closeConfirmModal(); }); });
-        
+        document.getElementById('client-list-tbody')?.addEventListener('click', (e) => { const btn=e.target.closest('button'); if(!btn)return; const id=btn.dataset.id; if(btn.classList.contains('action-edit')) showEditMode(id); if(btn.classList.contains('action-view')) showViewMode(id); if(btn.classList.contains('action-delete')) window.openConfirmModal("Excluir?", "Ação irreversível.", async () => { await deleteDoc(doc(clientsCollection, id)); window.showToast("Removido."); window.closeConfirmModal(); }); }); 
         function showViewMode(id) { const c=clientCache.get(id); if(!c)return; document.getElementById('view-client-name').innerText=c.name; renderChecklistRows(document.getElementById('view-checklist-tbody'),c.checklist,false); document.getElementById('client-list-section').classList.add('hidden'); document.getElementById('client-view-section').classList.remove('hidden'); }
         function showEditMode(id) { const c=clientCache.get(id); if(!c)return; currentEditingClientId=id; document.getElementById('edit-client-name').innerText=c.name; renderChecklistRows(document.getElementById('edit-checklist-tbody'),c.checklist,true); document.getElementById('client-list-section').classList.add('hidden'); document.getElementById('client-edit-section').classList.remove('hidden'); }
         function renderChecklistRows(tbody,data,isEditable){ tbody.innerHTML=''; const d=data||defaultChecklistData; checklistRowsConfig.forEach(conf=>{ const r=d[conf.key]||{}; const tr=document.createElement('tr'); if(!isEditable){ tr.innerHTML=`<td class="px-6 py-4 text-sm font-medium text-slate-300 bg-slate-800 border-r border-slate-700">${conf.label}</td><td class="px-6 py-4 text-sm text-slate-400 bg-blue-900/10 border-r border-slate-700">${formatValue(r.directa,r.directaLimit)}</td><td class="px-6 py-4 text-sm text-slate-400 bg-orange-900/10">${formatValue(r.fracionada,r.fracionadaLimit)}</td>`; }else{ const iD=conf.key==='observacao'?`<textarea data-k="${conf.key}" data-f="directa" class="w-full bg-slate-900 border border-slate-600 text-white rounded p-2 text-sm" rows="2">${r.directa||''}</textarea>`:`<input type="text" data-k="${conf.key}" data-f="directa" class="w-full bg-slate-900 border border-slate-600 text-white rounded p-2 text-sm" value="${r.directa||''}">`; const iF=conf.key==='observacao'?`<textarea data-k="${conf.key}" data-f="fracionada" class="w-full bg-slate-900 border border-slate-600 text-white rounded p-2 text-sm" rows="2">${r.fracionada||''}</textarea>`:`<input type="text" data-k="${conf.key}" data-f="fracionada" class="w-full bg-slate-900 border border-slate-600 text-white rounded p-2 text-sm" value="${r.fracionada||''}">`; const lD=['multiplosSKU','multiplosLotes','multiplosPedidos'].includes(conf.key)?`<input type="text" data-k="${conf.key}" data-f="directaLimit" class="w-full border-slate-700 bg-slate-800 text-slate-300 rounded p-1 text-xs mt-2" placeholder="Limite" value="${r.directaLimit||''}">`:''; const lF=['multiplosSKU','multiplosLotes','multiplosPedidos'].includes(conf.key)?`<input type="text" data-k="${conf.key}" data-f="fracionadaLimit" class="w-full border-slate-700 bg-slate-800 text-slate-300 rounded p-1 text-xs mt-2" placeholder="Limite" value="${r.fracionadaLimit||''}">`:''; tr.innerHTML=`<td class="px-4 py-4 text-sm font-medium text-slate-300 w-1/3">${conf.label}</td><td class="px-4 py-4 bg-blue-900/10 w-1/3">${iD}${lD}</td><td class="px-4 py-4 bg-orange-900/10 w-1/3">${iF}${lF}</td>`; } tbody.appendChild(tr); }); }
-        function formatValue(v,l){ if(!v)return'-'; const vl=v.toLowerCase().trim(); let h=v; if(vl==='sim')h=`<span class="text-emerald-400 font-bold">Sim</span>`; else if(vl==='não'||vl==='nao')h=`<span class="text-red-400 font-bold">Não</span>`; if(l)h+=`<div class="text-xs text-slate-400 mt-1 bg-slate-800 px-2 py-0.5 rounded border border-slate-600 inline-block">Max: ${l}</div>`; return h; }
-        
+        function formatValue(v,l){ if(!v)return'-'; const vl=v.toLowerCase().trim(); let h=v; if(vl==='sim')h=`<span class="text-emerald-400 font-bold">Sim</span>`; else if(vl==='não'||vl==='nao')h=`<span class="text-red-400 font-bold">Não</span>`; if(l)h+=`<div class="text-xs text-slate-400 mt-1 bg-slate-800 px-2 py-0.5 rounded border border-slate-600 inline-block">Max: ${l}</div>`; return h; }    
         safeBind('edit-save-btn','click',async()=>{ const n={}; checklistRowsConfig.forEach(c=>{ const d=document.querySelector(`[data-k="${c.key}"][data-f="directa"]`)?.value||"", f=document.querySelector(`[data-k="${c.key}"][data-f="fracionada"]`)?.value||"", dl=document.querySelector(`[data-k="${c.key}"][data-f="directaLimit"]`)?.value||"", fl=document.querySelector(`[data-k="${c.key}"][data-f="fracionadaLimit"]`)?.value||""; n[c.key]={directa:d,fracionada:f,directaLimit:dl,fracionadaLimit:fl}; }); await updateDoc(doc(clientsCollection,currentEditingClientId),{checklist:n}); window.showToast("Salvo!"); window.backToList(); });
         safeBind('add-client-btn','click',()=>{ document.getElementById('client-name').value=''; document.getElementById('client-modal').classList.remove('hidden'); setTimeout(()=>document.getElementById('client-modal').classList.remove('opacity-0'),10); });
         safeBind('client-form','submit',async(e)=>{ e.preventDefault(); const n=document.getElementById('client-name').value.trim(); if(!n)return; await addDoc(clientsCollection,{name:n,checklist:defaultChecklistData}); window.showToast("Cliente criado!"); document.getElementById('client-modal').classList.add('hidden'); });
         safeBind('client-modal-cancel','click',()=>document.getElementById('client-modal').classList.add('hidden')); safeBind('client-modal-close-x',()=>document.getElementById('client-modal').classList.add('hidden')); safeBind('view-back-btn','click',window.backToList); safeBind('edit-cancel-btn','click',window.backToList); safeBind('confirm-btn-cancel','click',window.closeConfirmModal); safeBind('confirm-btn-yes','click',()=>{if(pendingConfirmAction)pendingConfirmAction();});
-        
-        // Admin Tools
         safeBind('btn-reset-db','click',()=>{ window.openConfirmModal("Resetar BD?", "PERIGO: Reverte todos os dados.", async()=>{ try{ const s=await getDocs(clientsCollection); const b=writeBatch(db); s.forEach(d=>{ const n=d.data().name?.toUpperCase().trim(); b.update(d.ref,{checklist:specificClientRules[n]||defaultChecklistData}); }); await b.commit(); window.showToast("Reset concluído."); }catch(e){window.showToast("Erro reset",'error');} window.closeConfirmModal(); }); });
-        safeBind('btn-apply-rules','click',()=>{ window.openConfirmModal("Aplicar Regras?", "Atualiza clientes com regras hardcoded.", async()=>{ try{ const s=await getDocs(clientsCollection); const b=writeBatch(db); let c=0; s.forEach(d=>{ const n=d.data().name?.toUpperCase().trim(); if(specificClientRules[n]){ b.update(d.ref,{checklist:specificClientRules[n]}); c++; } }); if(c>0)await b.commit(); window.showToast(`${c} atualizados.`); }catch(e){window.showToast("Erro",'error');} window.closeConfirmModal(); }); });
-        
+        safeBind('btn-apply-rules','click',()=>{ window.openConfirmModal("Aplicar Regras?", "Atualiza clientes com regras hardcoded.", async()=>{ try{ const s=await getDocs(clientsCollection); const b=writeBatch(db); let c=0; s.forEach(d=>{ const n=d.data().name?.toUpperCase().trim(); if(specificClientRules[n]){ b.update(d.ref,{checklist:specificClientRules[n]}); c++; } }); if(c>0)await b.commit(); window.showToast(`${c} atualizados.`); }catch(e){window.showToast("Erro",'error');} window.closeConfirmModal(); }); });        
     </script>
 </body>
 
 </html>
-
-
-
-
 
