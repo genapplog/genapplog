@@ -682,9 +682,12 @@
                             <div class="bg-slate-900 p-4 flex justify-between items-center border-t border-slate-700">
                                 <span id="form-action-desc" class="text-xs text-slate-400 italic hidden md:block"></span>
                                 <div class="flex gap-3 ml-auto">
-                                    <button id="btn-cancel-occurrence" class="px-6 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800 font-medium transition">Cancelar</button>
-                                    <button id="btn-save-occurrence" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Salvar e Assinar</button>
-                                </div>
+    <button id="btn-cancel-occurrence" class="px-6 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800 font-medium transition">Cancelar</button>
+    
+    <button id="btn-reject-occurrence" class="hidden px-6 py-2 rounded-lg bg-red-900/50 border border-red-800 text-red-200 font-medium hover:bg-red-900 transition">Rejeitar</button>
+    
+    <button id="btn-save-occurrence" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Salvar e Assinar</button>
+</div>
                             </div>
                         </div>
                     </div>
@@ -1055,35 +1058,45 @@
         }
 
         function updateFormStateUI() {
-            const status = currentFormStatus;
-            const statusBar = document.getElementById('form-status-bar');
-            const dataInputs = document.querySelectorAll('.data-input');
-            const inputColab = document.getElementById('form-ass-colab'), inputLider = document.getElementById('form-ass-lider'), inputInv = document.getElementById('form-ass-inv'), inputInfrator = document.getElementById('form-infrator'), btnSave = document.getElementById('btn-save-occurrence'), descAction = document.getElementById('form-action-desc');
-            
-            inputColab.disabled = true; inputColab.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
-            inputLider.disabled = true; inputLider.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
-            inputInv.disabled = true; inputInv.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
-            dataInputs.forEach(input => input.disabled = false);
+    const status = currentFormStatus;
+    const statusBar = document.getElementById('form-status-bar');
+    const dataInputs = document.querySelectorAll('.data-input');
+    const inputColab = document.getElementById('form-ass-colab'), inputLider = document.getElementById('form-ass-lider'), inputInv = document.getElementById('form-ass-inv'), inputInfrator = document.getElementById('form-infrator');
+    const btnSave = document.getElementById('btn-save-occurrence'), btnReject = document.getElementById('btn-reject-occurrence'), descAction = document.getElementById('form-action-desc');
+    
+    // Reset inicial
+    inputColab.disabled = true; inputColab.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
+    inputLider.disabled = true; inputLider.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
+    inputInv.disabled = true; inputInv.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
+    dataInputs.forEach(input => input.disabled = false);
+    btnReject.classList.add('hidden'); // Esconde rejeitar por padrão
 
-            if (status === 'draft') {
-                statusBar.innerText = "Etapa 1: Preenchimento Inicial"; statusBar.className = "bg-indigo-900/50 text-indigo-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/30";
-                inputInfrator.disabled = true; inputInfrator.placeholder = "Reservado ao Inventário"; inputInfrator.classList.add('opacity-50');
-                inputColab.disabled = false; inputColab.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
-                btnSave.innerText = "Assinar e Enviar para Líder"; descAction.innerText = "Ao salvar, o relatório ficará bloqueado para o Líder aprovar.";
-            } else if (status === 'pendente_lider') {
-                statusBar.innerText = "Etapa 2: Aprovação do Líder"; statusBar.className = "bg-amber-900/50 text-amber-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-amber-500/30";
-                dataInputs.forEach(input => input.disabled = true);
-                inputLider.disabled = false; inputLider.placeholder = "Digite seu nome para aprovar"; inputLider.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
-                btnSave.innerText = "Assinar e Liberar para Inventário"; descAction.innerText = "Você está aprovando este relatório como Líder.";
-            } else if (status === 'pendente_inventario') {
-                statusBar.innerText = "Etapa 3: Validação do Inventário"; statusBar.className = "bg-blue-900/50 text-blue-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-blue-500/30";
-                dataInputs.forEach(input => input.disabled = false);
-                inputInfrator.disabled = false; inputInfrator.placeholder = "Nome do causador..."; inputInfrator.classList.remove('opacity-50');
-                inputInv.disabled = false; inputInv.placeholder = "Digite seu nome para finalizar"; inputInv.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
-                btnSave.innerText = "Assinar e Finalizar Relatório"; descAction.innerText = "Esta ação concluirá o relatório e o enviará para o Dashboard.";
-            }
-        }
+    if (status === 'draft') {
+        statusBar.innerText = "Etapa 1: Preenchimento Inicial"; statusBar.className = "bg-indigo-900/50 text-indigo-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/30";
+        inputInfrator.disabled = true; inputInfrator.placeholder = "Reservado ao Inventário"; inputInfrator.classList.add('opacity-50');
+        inputColab.disabled = false; inputColab.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
+        btnSave.innerText = "Assinar e Enviar para Líder"; descAction.innerText = "Ao salvar, o relatório ficará bloqueado para o Líder aprovar.";
+    
+    } else if (status === 'pendente_lider') {
+        statusBar.innerText = "Etapa 2: Aprovação do Líder"; statusBar.className = "bg-amber-900/50 text-amber-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-amber-500/30";
+        dataInputs.forEach(input => input.disabled = true);
+        inputLider.disabled = false; inputLider.placeholder = "Digite seu nome para aprovar"; inputLider.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
+        
+        btnSave.innerText = "Aprovar e Enviar p/ Inventário"; 
+        btnReject.innerText = "Rejeitar (Voltar p/ Rascunho)"; btnReject.classList.remove('hidden'); // Mostra botão Rejeitar
+        descAction.innerText = "Analise os dados. Se houver erro, clique em Rejeitar.";
 
+    } else if (status === 'pendente_inventario') {
+        statusBar.innerText = "Etapa 3: Validação do Inventário"; statusBar.className = "bg-blue-900/50 text-blue-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-blue-500/30";
+        dataInputs.forEach(input => input.disabled = false);
+        inputInfrator.disabled = false; inputInfrator.placeholder = "Nome do causador..."; inputInfrator.classList.remove('opacity-50');
+        inputInv.disabled = false; inputInv.placeholder = "Digite seu nome para finalizar"; inputInv.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
+        
+        btnSave.innerText = "Validar e Finalizar"; 
+        btnReject.innerText = "Rejeitar (Voltar p/ Rascunho)"; btnReject.classList.remove('hidden'); // Mostra botão Rejeitar
+        descAction.innerText = "Preencha o causador e finalize. Se incorreto, rejeite.";
+    }
+}
         function updateUIForRole(isAdmin) {
             const els = { label: document.getElementById('user-role-label'), indicator: document.getElementById('admin-indicator'), addBtn: document.getElementById('add-client-btn'), resetBtn: document.getElementById('btn-reset-db'), applyBtn: document.getElementById('btn-apply-rules'), dangerZone: document.getElementById('admin-danger-zone'), navConfig: document.getElementById('nav-link-config') };
             if (isAdmin) { els.label.innerText = "Admin (Teste)"; els.label.classList.add('text-green-400'); els.indicator.classList.remove('hidden'); els.addBtn.classList.remove('hidden'); els.dangerZone.classList.remove('hidden'); if(els.navConfig) els.navConfig.classList.remove('hidden'); }
@@ -1246,7 +1259,33 @@
             const fileName = `relatorio_ocorrencias_${new Date().toISOString().slice(0,19).replace(/:/g,"-")}.xlsx`;
             XLSX.writeFile(wb, fileName);
         });
+        safeBind('btn-reject-occurrence', 'click', () => {
+    window.openConfirmModal(
+        "Rejeitar Ocorrência?", 
+        "O relatório voltará para o status de <b>Rascunho</b> e as assinaturas de aprovação serão limpas. Deseja continuar?", 
+        async () => {
+            try {
+                if (!currentOccurrenceId) return;
+                
+                // Atualiza o documento voltando para 'draft' e limpando assinaturas superiores
+                await updateDoc(doc(occurrencesCollection, currentOccurrenceId), {
+                    status: 'draft',
+                    ass_lider: '', // Limpa assinatura do líder
+                    ass_inv: '',   // Limpa assinatura do inventário
+                    updatedAt: new Date()
+                });
 
+                window.showToast("Relatório rejeitado e devolvido para correção.");
+                window.closeConfirmModal();
+                document.getElementById('ocorrencias-novo').classList.add('hidden');
+                document.getElementById('ocorrencias-menu-view').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                window.showToast("Erro ao rejeitar.", "error");
+            }
+        }
+    );
+});
         // Botões de Ação Clientes
         safeBind('client-search', 'input', filterAndRenderClients);
         safeBind('clear-search-btn', 'click', () => { document.getElementById('client-search').value = ''; filterAndRenderClients(); });
@@ -1365,6 +1404,7 @@
 </body>
 
 </html>
+
 
 
 
