@@ -760,39 +760,48 @@
 
         <div id="admin-danger-zone" class="mt-12 pt-8 border-t border-slate-700 hidden">
             <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider mb-4">Área de Perigo (Admin)</h3>
-            <button id="btn-reset-db" class="px-6 py-2 bg-red-900/50 text-red-200 border border-red-800 rounded-lg font-medium hover:bg-red-900 transition text-sm flex items-center justify-center mx-auto gap-2">Resetar Banco de Dados</button>
-            <button id="btn-apply-rules" class="mt-4 px-6 py-2 bg-indigo-900/50 text-indigo-200 border border-indigo-800 rounded-lg font-medium hover:bg-indigo-900 transition text-sm flex items-center justify-center mx-auto gap-2">Aplicar Regras Individuais</button>
-        </div>
-    </div>
-</div>
-                <div class="mt-8 border-t border-slate-700 pt-6 text-left">
-    <div class="flex justify-between items-center mb-4">
-        <h4 class="text-slate-300 text-sm font-bold uppercase tracking-wider">Gerenciar Registros Individuais</h4>
-        <button id="btn-refresh-admin-list" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded transition">
-            Carregar Lista Completa
-        </button>
-    </div>
+            
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button id="btn-reset-db" class="px-6 py-2 bg-red-900/30 text-red-200 border border-red-800 rounded-lg font-medium hover:bg-red-900 transition text-sm flex items-center justify-center gap-2">
+                    Resetar Padrão Carregamento
+                </button>
+                
+                <button id="btn-wipe-occurrences" class="px-6 py-2 bg-red-600 text-white border border-red-500 rounded-lg font-medium hover:bg-red-700 transition text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-900/20">
+                    Zerar Todas as Ocorrências
+                </button>
 
-    <div class="overflow-hidden rounded-lg border border-slate-700 max-h-80 overflow-y-auto bg-slate-900">
-        <table class="min-w-full text-xs text-left">
-            <thead class="bg-slate-950 text-slate-400 font-medium sticky top-0 z-10">
-                <tr>
-                    <th class="px-4 py-2">Data</th>
-                    <th class="px-4 py-2">Tipo</th>
-                    <th class="px-4 py-2">Embarque / NF</th>
-                    <th class="px-4 py-2">Status</th>
-                    <th class="px-4 py-2 text-right">Ação</th>
-                </tr>
-            </thead>
-            <tbody id="admin-oc-list-tbody" class="divide-y divide-slate-800 text-slate-300">
-                <tr><td colspan="5" class="px-4 py-4 text-center text-slate-600 italic">Clique em "Carregar Lista" para gerenciar.</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+                <button id="btn-apply-rules" class="px-6 py-2 bg-indigo-900/50 text-indigo-200 border border-indigo-800 rounded-lg font-medium hover:bg-indigo-900 transition text-sm flex items-center justify-center gap-2">
+                    Aplicar Regras Individuais
+                </button>
             </div>
-        </div>
-    </div>
+
+            <div class="mt-8 border-t border-slate-700 pt-6 text-left">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-slate-300 text-sm font-bold uppercase tracking-wider">Gerenciar Registros Individuais</h4>
+                    <button id="btn-refresh-admin-list" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded transition">
+                        Carregar Lista Completa
+                    </button>
+                </div>
+
+                <div class="overflow-hidden rounded-lg border border-slate-700 max-h-80 overflow-y-auto bg-slate-900">
+                    <table class="min-w-full text-xs text-left">
+                        <thead class="bg-slate-950 text-slate-400 font-medium sticky top-0 z-10">
+                            <tr>
+                                <th class="px-4 py-2">Data</th>
+                                <th class="px-4 py-2">Tipo</th>
+                                <th class="px-4 py-2">Embarque / NF</th>
+                                <th class="px-4 py-2">Status</th>
+                                <th class="px-4 py-2 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-oc-list-tbody" class="divide-y divide-slate-800 text-slate-300">
+                            <tr><td colspan="5" class="px-4 py-4 text-center text-slate-600 italic">Clique em "Carregar Lista" para gerenciar.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div> </div> </div> ```
     <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0"><div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-sm m-4 text-center border border-slate-700 transform scale-95 transition-transform duration-200" id="confirm-modal-panel"><h2 id="confirm-title" class="text-xl font-bold mb-2 text-white">Tem certeza?</h2><p id="confirm-message" class="text-slate-400 mb-6 text-sm"></p><div class="flex justify-center gap-3"><button id="confirm-btn-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 font-medium hover:bg-slate-700 transition w-24">Cancelar</button><button id="confirm-btn-yes" class="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm transition w-24">Confirmar</button></div></div></div>
     <div id="client-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0"><div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-md m-4 border border-slate-700 transform transition-all scale-95"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-white">Novo Cliente</h2><button type="button" id="client-modal-close-x" class="text-slate-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div><form id="client-form"><div class="mb-6"><label for="client-name" class="block text-sm font-medium text-slate-300 mb-1.5">Nome da Empresa</label><input type="text" id="client-name" class="block w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required></div><div class="flex justify-end gap-3 border-t border-slate-700 pt-4"><button type="button" id="client-modal-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 font-medium transition">Cancelar</button><button type="submit" id="client-modal-save" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Criar Cliente</button></div></form></div></div>
 
@@ -1666,6 +1675,7 @@ safeBind('btn-refresh-admin-list', 'click', renderAdminOccurrenceList);
 </body>
 
 </html>
+
 
 
 
