@@ -684,7 +684,9 @@
                                 <div class="flex gap-3 ml-auto">
     <button id="btn-cancel-occurrence" class="px-6 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800 font-medium transition">Cancelar</button>
     
-    <button id="btn-reject-occurrence" class="hidden px-6 py-2 rounded-lg bg-red-900/50 border border-red-800 text-red-200 font-medium hover:bg-red-900 transition">Rejeitar</button>
+    <button id="btn-reject-occurrence" class="hidden px-6 py-2 rounded-lg bg-amber-900/50 border border-amber-800 text-amber-200 font-medium hover:bg-amber-900 transition">Devolver (Correção)</button>
+    
+    <button id="btn-delete-permanent" class="hidden px-6 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm transition">Excluir (Improcedente)</button>
     
     <button id="btn-save-occurrence" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Salvar e Assinar</button>
 </div>
@@ -1062,20 +1064,30 @@
     const statusBar = document.getElementById('form-status-bar');
     const dataInputs = document.querySelectorAll('.data-input');
     const inputColab = document.getElementById('form-ass-colab'), inputLider = document.getElementById('form-ass-lider'), inputInv = document.getElementById('form-ass-inv'), inputInfrator = document.getElementById('form-infrator');
-    const btnSave = document.getElementById('btn-save-occurrence'), btnReject = document.getElementById('btn-reject-occurrence'), descAction = document.getElementById('form-action-desc');
+    const btnSave = document.getElementById('btn-save-occurrence');
+    const btnReject = document.getElementById('btn-reject-occurrence');
+    const btnDelete = document.getElementById('btn-delete-permanent'); // Novo botão
+    const descAction = document.getElementById('form-action-desc');
     
-    // Reset inicial
+    // Reset inicial (Esconde tudo e reseta inputs)
     inputColab.disabled = true; inputColab.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
     inputLider.disabled = true; inputLider.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
     inputInv.disabled = true; inputInv.className = 'w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-slate-500 text-sm focus:outline-none transition-colors';
     dataInputs.forEach(input => input.disabled = false);
-    btnReject.classList.add('hidden'); // Esconde rejeitar por padrão
+    
+    // Esconde botões especiais por padrão
+    btnReject.classList.add('hidden');
+    btnDelete.classList.add('hidden'); 
 
     if (status === 'draft') {
         statusBar.innerText = "Etapa 1: Preenchimento Inicial"; statusBar.className = "bg-indigo-900/50 text-indigo-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/30";
         inputInfrator.disabled = true; inputInfrator.placeholder = "Reservado ao Inventário"; inputInfrator.classList.add('opacity-50');
         inputColab.disabled = false; inputColab.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
         btnSave.innerText = "Assinar e Enviar para Líder"; descAction.innerText = "Ao salvar, o relatório ficará bloqueado para o Líder aprovar.";
+        
+        // Permite excluir rascunho se já existir ID (edição)
+        if(currentOccurrenceId) btnDelete.classList.remove('hidden'); 
+        btnDelete.innerText = "Excluir Rascunho";
     
     } else if (status === 'pendente_lider') {
         statusBar.innerText = "Etapa 2: Aprovação do Líder"; statusBar.className = "bg-amber-900/50 text-amber-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-amber-500/30";
@@ -1083,8 +1095,10 @@
         inputLider.disabled = false; inputLider.placeholder = "Digite seu nome para aprovar"; inputLider.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
         
         btnSave.innerText = "Aprovar e Enviar p/ Inventário"; 
-        btnReject.innerText = "Rejeitar (Voltar p/ Rascunho)"; btnReject.classList.remove('hidden'); // Mostra botão Rejeitar
-        descAction.innerText = "Analise os dados. Se houver erro, clique em Rejeitar.";
+        btnReject.classList.remove('hidden'); 
+        btnDelete.classList.remove('hidden'); // Líder pode excluir
+        btnDelete.innerText = "Excluir (Improcedente)";
+        descAction.innerText = "Analise os dados. Devolva para correção ou exclua se improcedente.";
 
     } else if (status === 'pendente_inventario') {
         statusBar.innerText = "Etapa 3: Validação do Inventário"; statusBar.className = "bg-blue-900/50 text-blue-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-center border-b border-blue-500/30";
@@ -1093,8 +1107,10 @@
         inputInv.disabled = false; inputInv.placeholder = "Digite seu nome para finalizar"; inputInv.className = 'w-full bg-slate-700 border border-slate-600 rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors';
         
         btnSave.innerText = "Validar e Finalizar"; 
-        btnReject.innerText = "Rejeitar (Voltar p/ Rascunho)"; btnReject.classList.remove('hidden'); // Mostra botão Rejeitar
-        descAction.innerText = "Preencha o causador e finalize. Se incorreto, rejeite.";
+        btnReject.classList.remove('hidden'); 
+        btnDelete.classList.remove('hidden'); // Inventário pode excluir
+        btnDelete.innerText = "Excluir (Improcedente)";
+        descAction.innerText = "Finalize o processo, devolva ou exclua se necessário.";
     }
 }
         function updateUIForRole(isAdmin) {
@@ -1156,7 +1172,31 @@
                 tbody.appendChild(tr);
             });
         }
-        safeBind('btn-open-oc-dashboard', 'click', () => { 
+       safeBind('btn-delete-permanent', 'click', () => {
+    window.openConfirmModal(
+        "Excluir Ocorrência?", 
+        "ATENÇÃO: Esta ação apagará o relatório permanentemente do banco de dados. Não há como desfazer.", 
+        async () => {
+            try {
+                if (!currentOccurrenceId) return;
+                
+                // Deleta o documento da coleção atual (Teste ou Prod)
+                await deleteDoc(doc(occurrencesCollection, currentOccurrenceId));
+
+                window.showToast("Relatório excluído com sucesso.");
+                window.closeConfirmModal();
+                
+                // Fecha o formulário e volta pra lista
+                document.getElementById('ocorrencias-novo').classList.add('hidden');
+                document.getElementById('ocorrencias-menu-view').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                window.showToast("Erro ao excluir.", "error");
+            }
+        }
+    );
+});
+       safeBind('btn-open-oc-dashboard', 'click', () => { 
             document.getElementById('ocorrencias-menu-view').classList.add('hidden'); 
             document.getElementById('ocorrencias-dashboard').classList.remove('hidden'); 
             updateDashboard(); 
@@ -1404,6 +1444,7 @@
 </body>
 
 </html>
+
 
 
 
