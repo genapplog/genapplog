@@ -704,6 +704,25 @@
                         </div>
                         <div class="max-w-2xl mx-auto">
                             <div class="mb-8"><h2 class="text-2xl font-bold text-white mb-2">Importar Base de Dados</h2></div>
+                            <div class="mt-8 border-t border-slate-700 pt-8">
+    <h2 class="text-2xl font-bold text-white mb-2">Gestão de Equipe</h2>
+    <p class="text-slate-400 text-sm mb-4">Importe a lista de usuários e seus cargos (LIDER, INVENTARIO, OPERADOR).</p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <button id="download-users-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">
+            Baixar Modelo JSON
+        </button>
+        
+        <label for="users-upload" class="cursor-pointer px-4 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-500 transition shadow-lg text-center">
+            Importar Equipe
+            <input id="users-upload" type="file" class="hidden" accept=".json">
+        </label>
+    </div>
+    
+    <div id="users-import-status" class="hidden p-4 rounded-lg bg-slate-900 border border-slate-700 text-left">
+        <p class="text-sm text-slate-300 font-mono" id="users-import-status-text"></p>
+    </div>
+</div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                                 <button id="download-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">Baixar Modelo Padrão de Carregamento</button>
                                 <label for="file-upload" class="cursor-pointer px-4 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition shadow-lg">Importar Padrão de Carregamento<input id="file-upload" type="file" class="hidden" accept=".json"></label>
@@ -1222,6 +1241,82 @@
             document.getElementById('ocorrencias-novo').classList.add('hidden'); 
             document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); 
         });
+safeBind('download-users-template-btn', 'click', () => {
+    const templateData = [
+        { "id": "COLE_O_UID_AQUI", "name": "Nome do Colaborador", "role": "OPERADOR" },
+        { "id": "OUTRO_UID_AQUI", "name": "Nome do Líder", "role": "LIDER" }
+    ];
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(templateData, null, 2));
+    const anchor = document.createElement('a');
+    anchor.setAttribute("href", dataStr);
+    anchor.setAttribute("download", "modelo_equipe.json");
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+});
+
+// --- 2. Importar Usuários para o Firebase ---
+safeBind('users-upload', 'change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const statusDiv = document.getElementById('users-import-status');
+    const statusText = document.getElementById('users-import-status-text');
+    
+    statusDiv.classList.remove('hidden');
+    statusText.innerText = "Lendo arquivo de equipe...";
+    statusText.className = "text-sm text-yellow-400 font-mono";
+
+    const reader = new FileReader();
+    
+    reader.onload = async (event) => {
+        try {
+            const jsonContent = event.target.result;
+            const data = JSON.parse(jsonContent);
+
+            if (!Array.isArray(data)) throw new Error("O arquivo deve ser uma lista JSON.");
+
+            statusText.innerText = `Processando ${data.length} usuários...`;
+            
+            const batch = writeBatch(db);
+            let count = 0;
+
+            data.forEach(user => {
+                if (user.id && user.name && user.role) {
+                    // O segredo: Usamos o ID do usuário como ID do documento
+                    // Assim o Firebase sabe exatamente quem é quem no login
+                    const userRef = doc(db, 'users', user.id.trim());
+                    
+                    batch.set(userRef, {
+                        name: user.name.trim(),
+                        role: user.role.toUpperCase().trim(), // Garante padrão (LIDER, etc)
+                        updatedAt: new Date()
+                    });
+                    count++;
+                }
+            });
+
+            if (count === 0) throw new Error("Nenhum usuário válido encontrado (faltou id, name ou role).");
+
+            await batch.commit();
+
+            window.showToast(`${count} usuários atualizados com sucesso!`);
+            statusText.innerText = "Importação de equipe concluída!";
+            statusText.className = "text-sm text-emerald-400 font-mono";
+            
+            e.target.value = '';
+            setTimeout(() => statusDiv.classList.add('hidden'), 4000);
+
+        } catch (err) {
+            console.error(err);
+            window.showToast("Erro: " + err.message, 'error');
+            statusText.innerText = "Falha: " + err.message;
+            statusText.className = "text-sm text-red-400 font-mono";
+            e.target.value = '';
+        }
+    };
+    reader.readAsText(file);
+});
         // ZPL Logic & Bindings
         safeBind('btn-open-amazon', 'click', () => { document.getElementById('zpl-menu').classList.add('hidden'); document.getElementById('zpl-tool-amazon').classList.remove('hidden'); });
         safeBind('btn-back-zpl', 'click', () => { document.getElementById('zpl-tool-amazon').classList.add('hidden'); document.getElementById('zpl-menu').classList.remove('hidden'); });
