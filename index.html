@@ -1051,7 +1051,7 @@ setEnvironment(savedEnv);
         safeBind('btn-back-oc-form', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-cancel-occurrence', 'click', () => { document.getElementById('ocorrencias-novo').classList.add('hidden'); document.getElementById('ocorrencias-menu-view').classList.remove('hidden'); });
         safeBind('btn-dash-filter-apply', 'click', applyDashboardFilters);
-        safeBind('btn-dash-filter-clear', 'click', () => { document.getElementById('dash-filter-start').value = ''; document.getElementById('dash-filter-end').value = ''; applyDashboardFilters();  });
+        safeBind('btn-dash-filter-clear', 'click', () => {document.getElementById('dash-filter-start').value = '';document.getElementById('dash-filter-end').value = ''; applyDashboardFilters(); });;
         safeBind('download-template-btn', 'click', () => {
     const templateData = [
       {
@@ -1313,4 +1313,5 @@ safeBind('file-upload', 'change', (e) => {
 </body>
 
 </html>
+
 
