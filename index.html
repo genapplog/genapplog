@@ -1755,9 +1755,7 @@ safeBind('btn-apply-rules','click',()=>{
         } 
         window.closeConfirmModal(); 
     }); 
-});al("Aplicar Regras?", "Atualiza clientes com regras hardcoded.", async()=>{ try{ const s=await getDocs(clientsCollection); const b=writeBatch(db); let c=0; s.forEach(d=>{ const n=d.data().name?.toUpperCase().trim(); if(specificClientRules[n]){ b.update(d.ref,{checklist:specificClientRules[n]}); c++; } }); if(c>0)await b.commit(); window.showToast(`${c} atualizados.`); }catch(e){window.showToast("Erro",'error');} window.closeConfirmModal(); }); });
+});
     </script>
 </body>
-
 </html>
-
