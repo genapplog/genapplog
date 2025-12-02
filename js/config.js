@@ -8,7 +8,7 @@ export const firebaseConfig = {
     appId: "1:787938700532:web:442b667367341fb4ac02a1"
 };
 
-export const ADMIN_IDS = ["25hMg4MiXENNs4H50TkWBxMZi5r2", "OpWBrzxcyLRjHBHT0Pl8VEal2BA2", "8yUUyOHJdmSHpDG0yGZzuq1bsW73"];
+export const ADMIN_IDS = ["8yUUyOHJdmSHpDG0yGZzuq1bsW73", "blcpY2klXPeYLdsqfiGdBOdWgz43"];
 
 export const PATHS = {
     prod: { clients: `artifacts/${firebaseConfig.appId}/public/data/clients`, occurrences: `artifacts/${firebaseConfig.appId}/public/data/occurrences` },
@@ -58,4 +58,5 @@ export const labelDimensions = {
     "4x4": { pw: 800, ll: 800, aspect: "aspect-square" }, 
     "4x2": { pw: 800, ll: 400, aspect: "aspect-[2/1]" }, 
     "4x3.15": { pw: 800, ll: 640, aspect: "aspect-[10/8]" } 
+
 };
