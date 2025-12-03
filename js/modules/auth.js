@@ -1,25 +1,30 @@
 /**
  * ARQUIVO: js/modules/auth.js
- * DESCRIÇÃO: Autenticação Híbrida (Anônima + E-mail/Senha).
+ * DESCRIÇÃO: Autenticação Obrigatória (Admin ou Genérica).
  */
-import { showToast, safeBind, requestNotificationPermission } from '../utils.js'; // <--- Adicione requestNotificationPermission
-import { onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { ADMIN_IDS } from '../config.js';
-
+import { showToast, safeBind } from '../utils.js';
 
 let currentUser = null;
 let currentUserRole = 'OPERADOR';
-let currentUserName = ''; // Nova variável para guardar o nome
+let currentUserName = ''; 
+
+// E-mail da conta genérica (para não auto-preencher nome)
+const GENERIC_EMAIL = "operador@applog.com"; 
 
 export function initAuth(auth, initialToken, callbackEnv) {
     const db = getFirestore();
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            // Usuário logado: Carrega sistema
+            document.getElementById('login-modal').classList.add('hidden'); // Garante que fecha modal
             handleUserLoaded(user, db, callbackEnv);
         } else {
-            signInAnonymously(auth).catch((e) => console.error("Erro anônimo", e));
+            // Ninguém logado: FORÇA O LOGIN
+            showLoginModal(true); // true = modo forçado (sem botão cancelar)
         }
     });
 
@@ -27,39 +32,38 @@ export function initAuth(auth, initialToken, callbackEnv) {
 }
 
 async function handleUserLoaded(user, db, callbackEnv) {
-    // Pede permissão para notificar assim que carrega o usuário
-    requestNotificationPermission(); 
     currentUser = user;
-    document.getElementById('userIdDisplay').innerText = user.uid.slice(0, 15) + '...';
+    document.getElementById('userIdDisplay').innerText = user.email || 'Usuário';
 
     const isAdminConfig = ADMIN_IDS.includes(user.uid);
     
+    // Lógica de Nome e Cargo
     try {
-        const userSnap = await getDoc(doc(db, 'users', user.uid));
-        if (userSnap.exists()) {
-            const data = userSnap.data();
-            currentUserRole = data.role ? data.role.toUpperCase() : 'OPERADOR';
-            currentUserName = data.name || 'Usuário'; // Pega o nome do banco
-        } else {
+        // 1. Verifica se é o Login Genérico
+        if (user.email === GENERIC_EMAIL) {
             currentUserRole = 'OPERADOR';
-            currentUserName = user.isAnonymous ? 'Operador Anônimo' : 'Admin (Sistema)';
+            currentUserName = ''; // DEIXA VAZIO para obrigar digitação
+        } else {
+            // 2. Se não for genérico, tenta buscar perfil pessoal
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (userSnap.exists()) {
+                const data = userSnap.data();
+                currentUserRole = data.role ? data.role.toUpperCase() : 'OPERADOR';
+                currentUserName = data.name || '';
+            } else {
+                // Admin sem cadastro no 'users'
+                currentUserRole = isAdminConfig ? 'ADMIN' : 'OPERADOR';
+                currentUserName = isAdminConfig ? 'Administrador' : '';
+            }
         }
     } catch (e) { console.log(e); }
 
-    if (isAdminConfig) {
-        currentUserRole = 'ADMIN';
-        if(currentUserName === 'Operador Anônimo') currentUserName = 'Administrador';
-    }
+    if (isAdminConfig) currentUserRole = 'ADMIN';
 
     // Atualiza UI
     const roleLabel = document.getElementById('user-role-label');
-    if (user.isAnonymous && !isAdminConfig) {
-        roleLabel.innerText = "Operador (Anônimo)";
-        document.getElementById('btn-logout').classList.add('hidden');
-    } else {
-        roleLabel.innerText = `Logado (${currentUserRole})`;
-        document.getElementById('btn-logout').classList.remove('hidden');
-    }
+    roleLabel.innerText = user.email === GENERIC_EMAIL ? "Operação (Genérico)" : `Logado (${currentUserRole})`;
+    document.getElementById('btn-logout').classList.remove('hidden');
 
     updateUIForRole(currentUserRole === 'ADMIN');
     
@@ -67,24 +71,31 @@ async function handleUserLoaded(user, db, callbackEnv) {
     if (callbackEnv) callbackEnv(savedEnv);
 }
 
-function setupLoginUI(auth) {
+function showLoginModal(forced = false) {
     const modal = document.getElementById('login-modal');
+    const btnClose = document.getElementById('btn-close-login');
     
-    safeBind('btn-open-login', 'click', () => {
-        if (currentUser && currentUser.uid) {
-            navigator.clipboard.writeText(currentUser.uid)
-                .then(() => showToast("ID de usuário copiado!", "info"))
-                .catch(() => console.log("Erro ao copiar ID"));
-        }
-        if (!currentUser.isAnonymous) return; 
-        modal.classList.remove('hidden');
-    });
+    modal.classList.remove('hidden');
+    
+    if (forced) {
+        // Esconde o botão cancelar se o login for obrigatório
+        btnClose.classList.add('hidden');
+    } else {
+        btnClose.classList.remove('hidden');
+    }
+}
 
+function setupLoginUI(auth) {
+    // Abrir Modal (botão lateral)
+    safeBind('btn-open-login', 'click', () => showLoginModal(false));
+
+    // Fechar Modal
     safeBind('btn-close-login', 'click', (e) => {
         e.preventDefault();
-        modal.classList.add('hidden');
+        document.getElementById('login-modal').classList.add('hidden');
     });
 
+    // Fazer Login
     safeBind('login-form', 'submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
@@ -95,20 +106,19 @@ function setupLoginUI(auth) {
         
         try {
             await signInWithEmailAndPassword(auth, email, pass);
-            showToast("Bem-vindo de volta, Admin!");
-            modal.classList.add('hidden');
+            // O onAuthStateChanged cuidará do resto
         } catch (error) {
             console.error(error);
             showToast("E-mail ou senha inválidos.", "error");
-        } finally {
             btn.disabled = false; btn.innerText = "Entrar";
         }
     });
 
+    // Fazer Logout
     safeBind('btn-logout', 'click', async () => {
         try {
             await signOut(auth);
-            showToast("Você saiu. Voltando para modo Operador.");
+            // onAuthStateChanged vai disparar e abrir o modal de login forçado
         } catch (e) { console.error(e); }
     });
 }
@@ -121,20 +131,14 @@ function updateUIForRole(isAdmin) {
         navConfig: document.getElementById('nav-link-config') 
     };
     
-    if (isAdmin) { 
-        els.indicator.classList.remove('hidden'); 
-        els.addBtn.classList.remove('hidden'); 
-        els.dangerZone.classList.remove('hidden'); 
-        if (els.navConfig) els.navConfig.classList.remove('hidden'); 
-    } else { 
-        els.indicator.classList.add('hidden'); 
-        els.addBtn.classList.add('hidden'); 
-        els.dangerZone.classList.add('hidden'); 
-        if (els.navConfig) els.navConfig.classList.add('hidden'); 
-    }
+    const action = isAdmin ? 'remove' : 'add';
+    els.indicator.classList[action]('hidden');
+    els.addBtn.classList[action]('hidden');
+    els.dangerZone.classList[action]('hidden');
+    if (els.navConfig) els.navConfig.classList[action]('hidden');
 }
 
 export function getCurrentUser() { return currentUser; }
 export function getUserRole() { return currentUserRole; }
-export function getCurrentUserName() { return currentUserName; } // Exportando o nome!
+export function getCurrentUserName() { return currentUserName; }
 export function checkIsAdmin() { return currentUserRole === 'ADMIN'; }
