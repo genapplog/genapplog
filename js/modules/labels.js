@@ -8,6 +8,8 @@ import { labelDimensions, cdData } from '../config.js';
 const baseApiUrl = 'https://api.labelary.com/v1/printers/8dpmm/labels/';
 
 export function initLabelsModule() {
+    console.log("Iniciando Módulo de Etiquetas...");
+
     // Navegação
     safeBind('btn-open-amazon', 'click', () => { document.getElementById('zpl-menu').classList.add('hidden'); document.getElementById('zpl-tool-amazon').classList.remove('hidden'); });
     safeBind('btn-back-zpl', 'click', () => { document.getElementById('zpl-tool-amazon').classList.add('hidden'); document.getElementById('zpl-menu').classList.remove('hidden'); });
@@ -18,7 +20,29 @@ export function initLabelsModule() {
     safeBind('btn-toggle-zpl-amazon', 'click', () => document.getElementById('box-zpl-amazon').classList.toggle('hidden'));
     safeBind('btn-toggle-zpl-manual', 'click', () => document.getElementById('box-zpl-manual').classList.toggle('hidden'));
 
-    // Auto-preenchimento
+    // --- MELHORIA: LIMPEZA AUTOMÁTICA DA CHAVE NF ---
+    const inputNf = document.getElementById('inputChaveNf');
+    if (inputNf) {
+        // 1. Remove o limite do HTML para permitir colar o texto grande com espaços
+        inputNf.removeAttribute('maxlength'); 
+        
+        // 2. Adiciona o filtro que limpa espaços instantaneamente
+        inputNf.addEventListener('input', (e) => {
+            // Remove tudo que NÃO for número (espaços, pontos, letras)
+            let cleanValue = e.target.value.replace(/\D/g, '');
+            
+            // Limita a 44 caracteres numéricos
+            if (cleanValue.length > 44) {
+                cleanValue = cleanValue.substring(0, 44);
+            }
+            
+            // Devolve o valor limpo para o campo
+            e.target.value = cleanValue;
+        });
+    }
+    // -------------------------------------------------
+
+    // Auto-preenchimento Sequência
     safeBind('inputQuantidadeTotal', 'input', (e) => { document.getElementById('inputCaixaFinal').value = e.target.value; });
     safeBind('inputManualQtdTotal', 'input', (e) => { document.getElementById('inputManualCaixaFim').value = e.target.value; });
 
@@ -107,7 +131,6 @@ async function handleGenerateAmazon() {
 
     const previewZpl = generateZplTemplate(dimensionConfig, cdCode, cdInfo, nfKey, poNumber, boxStart, totalQty);
     
-    // Preview sempre pede a index 0 (só uma imagem)
     fetchPreview(sizeKey, previewZpl, btn, btnPrint, preview, 'Gerar Etiqueta', true);
     
     if(boxEnd > boxStart) showToast(`Lote de ${boxEnd - boxStart + 1} etiquetas gerado.`);
@@ -146,7 +169,7 @@ async function handleGenerateManual() {
 async function fetchPreview(sizeKey, zpl, btn, btnPrint, previewContainer, btnText, rotate = false) {
     btn.disabled = true; btn.innerText = 'Gerando...'; previewContainer.innerHTML = '<span class="spinner"></span>';
     try {
-        // PREVIEW: Mantém o /0/ para pegar apenas 1 imagem
+        // Preview: usa Headers padrão
         const response = await fetch(`${baseApiUrl}${sizeKey}/0/`, { method: 'POST', headers: { 'Accept': 'image/png', 'Content-Type': 'application/x-www-form-urlencoded' }, body: zpl });
         if (response.ok) {
             const imageUrl = URL.createObjectURL(await response.blob());
@@ -168,8 +191,7 @@ async function handlePrintPDF(zplId, sizeId, btnId, fixedSize) {
     
     btn.disabled = true; btn.innerText = "Baixando...";
     try {
-        // PDF: Removemos o /0/ da URL para que a API gere o PDF com TODAS as etiquetas
-        // E mantemos os headers corretos
+        // PDF: URL sem /0/ e Content-Type obrigatório
         const response = await fetch(`${baseApiUrl}${sizeKey}/`, { 
             method: 'POST', 
             headers: { 
