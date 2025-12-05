@@ -1,0 +1,14 @@
+# Logs e Sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependências
+node_modules/
+.env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase.json
+.firebaserc
