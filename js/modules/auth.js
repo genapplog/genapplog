@@ -3,7 +3,7 @@
  * DESCRIÇÃO: Autenticação, Controle de Acesso (RBAC) e Copiar ID.
  */
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { ADMIN_IDS } from '../config.js';
 import { showToast, safeBind, copyToClipboard } from '../utils.js';
 
@@ -46,6 +46,9 @@ async function handleUserLoaded(user, db, callbackEnv) {
                 const data = userSnap.data();
                 currentUserRole = data.role ? data.role.toUpperCase() : 'OPERADOR';
                 currentUserName = data.name || '';
+                // Carrega o PIN se existir
+                const pinField = document.getElementById('profile-pin');
+                if (pinField) pinField.value = data.pin || '';
             } else {
                 currentUserRole = isAdminConfig ? 'ADMIN' : 'OPERADOR';
                 currentUserName = isAdminConfig ? 'Administrador' : '';
@@ -149,43 +152,69 @@ function setupLoginUI(auth) {
             btn.disabled = false; btn.innerText = "Atualizar Senha";
         }
     });
+    // --- LÓGICA: SALVAR PIN (VISTO ELETRÔNICO) ---
+    safeBind('btn-save-pin', 'click', async () => {
+        if (!currentUser) return;
+        const pinVal = document.getElementById('profile-pin').value.trim();
+        const btn = document.getElementById('btn-save-pin');
+
+        if (pinVal.length < 4) return showToast("O PIN deve ter no mínimo 4 dígitos.", "error");
+
+        btn.disabled = true; btn.innerText = "...";
+        try {
+            const db = getFirestore();
+            // Salva o PIN no documento do usuário (merge: true para não apagar o resto)
+            await setDoc(doc(db, 'users', currentUser.uid), { pin: pinVal }, { merge: true });
+            showToast("PIN de assinatura salvo!");
+        } catch (e) {
+            console.error(e);
+            showToast("Erro ao salvar PIN.", "error");
+        } finally {
+            btn.disabled = false; btn.innerText = "Salvar PIN";
+        }
+    });
 }
 
+// ATUALIZADO: Função que gerencia a visibilidade baseada no Cargo
 // ATUALIZADO: Função que gerencia a visibilidade baseada no Cargo
 function updateUIForRole(role) {
     const isAdmin = role === 'ADMIN';
     // Quem pode ver a aba Configurações? (Admin, Lider, Inventário)
-    // Motivo: Todos esses precisam poder trocar o ambiente (Teste/Produção)
     const canAccessConfig = ['ADMIN', 'LIDER', 'INVENTARIO'].includes(role);
 
-    // 1. Elementos exclusivos de ADMIN (Botão adicionar cliente, Zonas de perigo, Seções de gestão)
+    // 1. Elementos exclusivos de ADMIN
     const adminEls = { 
         indicator: document.getElementById('admin-indicator'), 
         addBtn: document.getElementById('add-client-btn'), 
         dangerZone: document.getElementById('admin-danger-zone'),
-        // Seções internas da tela de Configuração (Adicionadas via ID no HTML)
         cfgClients: document.getElementById('cfg-section-clients'),
         cfgTeam: document.getElementById('cfg-section-team'),
         cfgProds: document.getElementById('cfg-section-products')
     };
     
-    // Se for Admin, remove a classe 'hidden'. Se não for, adiciona 'hidden'.
     const adminAction = isAdmin ? 'remove' : 'add';
     
     if (adminEls.indicator) adminEls.indicator.classList[adminAction]('hidden');
     if (adminEls.addBtn) adminEls.addBtn.classList[adminAction]('hidden');
     if (adminEls.dangerZone) adminEls.dangerZone.classList[adminAction]('hidden');
     
-    // Esconde/Mostra os blocos de gestão dentro da aba Configurações
     if (adminEls.cfgClients) adminEls.cfgClients.classList[adminAction]('hidden');
     if (adminEls.cfgTeam) adminEls.cfgTeam.classList[adminAction]('hidden');
     if (adminEls.cfgProds) adminEls.cfgProds.classList[adminAction]('hidden');
 
-    // 2. Elementos de Gestão (Acesso à aba Configurações no menu lateral)
+    // 2. Elementos de Gestão (Aba Configurações)
     const navConfig = document.getElementById('nav-link-config');
     if (navConfig) {
         if (canAccessConfig) navConfig.classList.remove('hidden');
         else navConfig.classList.add('hidden');
+    }
+
+    // 3. Controle de Acesso: Minha Conta (Operador não vê)
+    const navProfile = document.querySelector('a[data-page="perfil"]');
+    if (navProfile) {
+        // Se for OPERADOR, esconde. Qualquer outro cargo (Admin, Lider, Inventário) visualiza.
+        if (role === 'OPERADOR') navProfile.classList.add('hidden');
+        else navProfile.classList.remove('hidden');
     }
 }
 

@@ -65,6 +65,12 @@ window.copyToClipboard = copyToClipboard;
 export function printDocument(title, contentHTML) {
     const printWindow = window.open('', '_blank');
     
+    // CORREÇÃO DE SEGURANÇA: Verifica se o popup foi bloqueado pelo navegador
+    if (!printWindow) {
+        showToast("Navegador bloqueou a janela! Permita popups para imprimir.", "error");
+        return;
+    }
+
     const htmlStructure = `
         <!DOCTYPE html>
         <html>
@@ -113,6 +119,7 @@ export function printDocument(title, contentHTML) {
         </html>
     `;
 
+    // Agora é seguro acessar .document
     printWindow.document.write(htmlStructure);
     printWindow.document.close();
 }

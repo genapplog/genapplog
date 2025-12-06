@@ -60,3 +60,16 @@ export const labelDimensions = {
     "4x3.15": { pw: 800, ll: 640, aspect: "aspect-[10/8]" } 
 
 };
+
+// Configuração de Segurança para Validação Presencial
+// Em produção, isso poderia vir do banco de dados de cada usuário.
+export const SECURITY_CONFIG = {
+    // Lista de Líderes e seus PINs individuais
+    LEADERS_DB: [
+        { name: "Líder Geral", pin: "2025" },
+        { name: "João Silva", pin: "1111" },
+        { name: "Maria Oliveira", pin: "2222" },
+        { name: "Carlos Souza", pin: "3333" },
+        // Adicione quantos quiser...
+    ]
+};

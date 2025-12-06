@@ -2,9 +2,10 @@
  * ARQUIVO: js/modules/rnc.js
  * DESCRIÇÃO: Gestão de Divergências, Etiquetas e Notificações (Core).
  */
-import { onSnapshot, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { onSnapshot, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { safeBind, showToast, openConfirmModal, closeConfirmModal, sendDesktopNotification, requestNotificationPermission } from '../utils.js';
-import { PATHS } from '../config.js';
+import { PATHS, SECURITY_CONFIG } from '../config.js';
 import { getUserRole, getCurrentUserName } from './auth.js';
 // Importação dos Módulos Satélites
 import { initDashboard, updateDashboardView } from './dashboard.js';
@@ -71,6 +72,45 @@ export async function initRncModule(db, isTest) {
         updatePendingList(); 
     });
 
+    // --- LISTENER DE CHAMADOS (Lado do Líder) ---
+    // Escuta a coleção 'notifications' criada nos últimos 5 minutos
+    const notifPath = isTest ? 'notifications_test' : 'notifications'; // Se quiser separar teste
+    // Para simplificar, vamos usar o path global definido no config ou hardcoded aqui se preferir
+    // Assumindo que criamos 'notifications' na raiz de artifacts no passo 1:
+    const notificationsRef = collection(db, `artifacts/${globalDb.app.options.appId}/public/data/notifications`);
+    
+    // Filtra apenas notificações recentes (últimos 2 minutos) para não apitar coisas velhas ao abrir o app
+    const recentTime = new Date(Date.now() - 2 * 60 * 1000); 
+    const qNotif = query(notificationsRef, where('createdAt', '>', recentTime));
+
+    // Adicionamos tratamento de erro para não travar o Operador
+    onSnapshot(qNotif, {
+        next: (snapshot) => {
+            snapshot.docChanges().forEach(change => {
+                if (change.type === "added") {
+                    const n = change.doc.data();
+                    const myRole = getUserRole();
+                    const myEmail = getAuth().currentUser?.email; // Usa getAuth importado
+                    
+                    // Se eu sou LIDER ou ADMIN, e não fui eu que chamei
+                    if ((myRole === 'LIDER' || myRole === 'ADMIN') && n.requesterEmail !== myEmail) {
+                        sendDesktopNotification("📢 Chamado Operacional", `Operador ${n.requesterName} solicita presença no ${n.local || 'Local'}.`);
+                        showToast(`📢 ${n.requesterName} está chamando!`, "warning");
+                    }
+                }
+            });
+        },
+        error: (error) => {
+            // Se der erro de permissão (code permission-denied), é porque sou Operador.
+            // Apenas ignoramos silenciosamente.
+            if (error.code === 'permission-denied') {
+                console.log("Modo Operador: Escuta de chamados administrativos desativada.");
+            } else {
+                console.error("Erro no listener de notificações:", error);
+            }
+        }
+    });
+
     if (!bindingsInitialized) {
         setupRncBindings();
         initDashboard(); 
@@ -130,6 +170,53 @@ function setupRncBindings() {
             if (btn) handleFinishLabel(btn.dataset.id); 
         }); 
     }
+    // Bindings do Modal de Líder
+    safeBind('btn-cancel-leader-auth', 'click', () => {
+        document.getElementById('leader-auth-modal').classList.add('hidden');
+        document.getElementById('auth-leader-pin').value = '';
+    });
+    
+    // O botão de confirmar do modal chama a função de finalização
+    safeBind('btn-confirm-leader-auth', 'click', () => submitLeaderAuth());
+
+    // Botão "Chamar Líder"
+    safeBind('btn-call-leader-remote', 'click', async () => {
+        const btn = document.getElementById('btn-call-leader-remote');
+        btn.disabled = true; 
+        btn.innerHTML = "🔔 Chamando...";
+        
+        try {
+            // Se getAuth() não for importado (Passo 1), o erro acontece aqui!
+            const user = getAuth().currentUser; 
+            const userName = getCurrentUserName() || "Operador";
+            const local = document.querySelector('input[name="oc_local"]:checked')?.value || "Local n/d";
+            
+            // Atenção às crases (`) aqui
+            const notificationsRef = collection(globalDb, `artifacts/${globalDb.app.options.appId}/public/data/notifications`);
+            
+            await addDoc(notificationsRef, {
+                type: 'leader_call',
+                requesterName: userName,
+                requesterEmail: user ? user.email : 'anon',
+                local: local,
+                createdAt: new Date(),
+                read: false
+            });
+
+            showToast("Alerta enviado para todos os líderes!");
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="group-hover:animate-bounce">📢</span> Líder Distante? Chamar Agora';
+            }, 10000); 
+
+        } catch (e) {
+            console.error(e); // <--- Abra o console (F12) se o erro persistir para ver a mensagem vermelha aqui
+            showToast("Erro ao chamar líder.", "error");
+            btn.disabled = false;
+            btn.innerHTML = "Tentar Novamente";
+        }
+    });
 }
 
 // =================================================================
@@ -302,43 +389,160 @@ async function handleSaveReq() {
 
 function resetForm() { currentOccurrenceId = null; currentFormStatus = 'draft'; const ids = ['form-embarque','form-nf','form-obs','form-outros-emb','form-item-cod','form-item-desc','form-item-lote','form-item-qtd','form-item-end','form-infrator','form-ass-colab','form-ass-lider','form-ass-inv']; ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); const dateEl = document.getElementById('form-data'); if(dateEl) dateEl.valueAsDate = new Date(); const checks = ['check-amassada','check-rasgada','check-vazamento']; checks.forEach(id => { const el = document.getElementById(id); if(el) el.checked = false; }); document.querySelectorAll('input[name="oc_tipo"]').forEach(r => r.checked = false); document.querySelectorAll('input[name="oc_local"]').forEach(r => r.checked = false); updateFormStateUI(); }
 
+// Função chamada pelo botão "Salvar" do formulário
+// Função chamada pelo botão "Salvar" do formulário
 async function handleSave() {
     if (isSaving) return;
+
+    // Lógica para Rascunho (Etapa 1)
+    if (currentFormStatus === 'draft') {
+        const tipo = document.querySelector('input[name="oc_tipo"]:checked')?.value;
+        const assColab = document.getElementById('form-ass-colab').value;
+        
+        if (!assColab.trim()) return showToast("Assine como Colaborador antes de chamar o Líder.", "error");
+        if (!tipo) return showToast("Selecione o Tipo da ocorrência.", "error");
+
+        // --- CORREÇÃO DE SEGURANÇA AQUI ---
+        // Tenta pegar os elementos do modal
+        const pinField = document.getElementById('auth-leader-pin');
+        const modal = document.getElementById('leader-auth-modal');
+
+        // Se por algum motivo o HTML não carregou o campo, paramos aqui sem travar
+        if (!pinField || !modal) {
+            console.error("ERRO CRÍTICO: Modal ou Campo de PIN não encontrados no HTML.");
+            console.log("Pin Field:", pinField);
+            console.log("Modal:", modal);
+            return showToast("Erro de Interface: Recarregue a página (F5).", "error");
+        }
+
+        // Se tudo existe, prossegue normalmente
+        pinField.value = '';  // Limpa a senha anterior
+        modal.classList.remove('hidden'); // Mostra o modal
+        
+        // Pequeno atraso para garantir que o modal está visível antes de focar
+        setTimeout(() => pinField.focus(), 50); 
+        return; 
+    }
+
+    // Se não for rascunho, salva direto
+    processSaveData();
+}
+
+// Função chamada pelo botão "Confirmar" do Modal de Líder
+// Função chamada pelo botão "Confirmar" do Modal de Líder
+async function submitLeaderAuth() {
+    const pin = document.getElementById('auth-leader-pin').value.trim();
+    if (!pin) return showToast("Digite o PIN do Líder.", "error");
+
+    const btn = document.getElementById('btn-confirm-leader-auth');
+    const originalText = btn.innerText;
+    btn.disabled = true; btn.innerText = "Verificando...";
+
+    try {
+        // 1. Busca no Firestore: Quem tem esse PIN?
+        const usersRef = collection(globalDb, 'users');
+        const q = query(usersRef, where('pin', '==', pin));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            showToast("PIN inválido.", "error");
+            btn.disabled = false; btn.innerText = originalText;
+            return;
+        }
+
+        // 2. Verifica se o usuário encontrado é LIDER ou ADMIN
+        const userDoc = snapshot.docs[0].data();
+        const role = userDoc.role ? userDoc.role.toUpperCase() : '';
+
+        if (role !== 'LIDER' && role !== 'ADMIN') {
+            showToast("Este usuário não tem permissão de Liderança.", "error");
+            btn.disabled = false; btn.innerText = originalText;
+            return;
+        }
+
+        // 3. Sucesso! Pega o nome do banco de dados
+        const leaderName = userDoc.name || "Líder (Sem nome)";
+        showToast(`Validado por: ${leaderName}`);
+
+        document.getElementById('form-ass-lider').value = leaderName;
+        document.getElementById('leader-auth-modal').classList.add('hidden');
+        
+        processSaveData(); // Salva a ocorrência
+
+    } catch (e) {
+        console.error(e);
+        showToast("Erro de conexão ao validar PIN.", "error");
+    } finally {
+        btn.disabled = false; btn.innerText = originalText;
+    }
+}
+
+// Lógica real de salvamento (separada para ser reusada)
+async function processSaveData() {
     const btn = document.getElementById('btn-save-occurrence');
     const originalText = btn.innerHTML;
-
+    
     try {
         isSaving = true; btn.disabled = true; btn.innerText = "Processando...";
 
         const data = {
             updatedAt: new Date(), 
-            embarque: document.getElementById('form-embarque').value, nf: document.getElementById('form-nf').value, dataRef: document.getElementById('form-data').value, 
-            tipo: document.querySelector('input[name="oc_tipo"]:checked')?.value || "N/A", local: document.querySelector('input[name="oc_local"]:checked')?.value || "N/A", obs: document.getElementById('form-obs').value,
-            emb_amassada: document.getElementById('check-amassada').checked, emb_rasgada: document.getElementById('check-rasgada').checked, emb_vazamento: document.getElementById('check-vazamento').checked, emb_outros: document.getElementById('form-outros-emb').value,
-            item_cod: document.getElementById('form-item-cod').value, item_desc: document.getElementById('form-item-desc').value, item_lote: document.getElementById('form-item-lote').value, item_qtd: document.getElementById('form-item-qtd').value, item_end: document.getElementById('form-item-end').value, infrator: document.getElementById('form-infrator').value,
-            ass_colab: document.getElementById('form-ass-colab').value, ass_lider: document.getElementById('form-ass-lider').value, ass_inv: document.getElementById('form-ass-inv').value
+            embarque: document.getElementById('form-embarque').value, 
+            nf: document.getElementById('form-nf').value, 
+            dataRef: document.getElementById('form-data').value, 
+            tipo: document.querySelector('input[name="oc_tipo"]:checked')?.value || "N/A", 
+            local: document.querySelector('input[name="oc_local"]:checked')?.value || "N/A", 
+            obs: document.getElementById('form-obs').value,
+            emb_amassada: document.getElementById('check-amassada').checked, 
+            emb_rasgada: document.getElementById('check-rasgada').checked, 
+            emb_vazamento: document.getElementById('check-vazamento').checked, 
+            emb_outros: document.getElementById('form-outros-emb').value,
+            item_cod: document.getElementById('form-item-cod').value, 
+            item_desc: document.getElementById('form-item-desc').value, 
+            item_lote: document.getElementById('form-item-lote').value, 
+            item_qtd: document.getElementById('form-item-qtd').value, 
+            item_end: document.getElementById('form-item-end').value, 
+            infrator: document.getElementById('form-infrator').value,
+            ass_colab: document.getElementById('form-ass-colab').value, 
+            ass_lider: document.getElementById('form-ass-lider').value, 
+            ass_inv: document.getElementById('form-ass-inv').value
         };
 
         let newStatus = currentFormStatus;
+
+        // LÓGICA DE MUDANÇA DE STATUS
         if (currentFormStatus === 'draft') { 
-            if (!data.ass_colab.trim()) throw new Error("Assinatura obrigatória."); 
-            if(!data.tipo || data.tipo === "N/A") throw new Error("Selecione o Tipo."); 
-            newStatus = 'pendente_lider'; data.createdAt = new Date(); 
+            // Como já passou pelo Modal de Senha, o ass_lider já está preenchido
+            newStatus = 'pendente_inventario'; 
+            data.createdAt = new Date(); 
         }
-        else if (currentFormStatus === 'pendente_lider') { if (!data.ass_lider.trim()) throw new Error("Assinatura obrigatória."); newStatus = 'pendente_inventario'; }
-        else if (currentFormStatus === 'pendente_inventario') { if (!data.ass_inv.trim()) throw new Error("Assinatura obrigatória."); newStatus = 'concluido'; }
+        else if (currentFormStatus === 'pendente_lider') { 
+            // Caso legado
+            newStatus = 'pendente_inventario'; 
+        }
+        else if (currentFormStatus === 'pendente_inventario') { 
+            if (!data.ass_inv.trim()) throw new Error("Assinatura do Inventário obrigatória."); 
+            newStatus = 'concluido'; 
+        }
         
         data.status = newStatus;
 
         if (currentOccurrenceId) await updateDoc(doc(currentCollectionRef, currentOccurrenceId), data); 
         else await addDoc(currentCollectionRef, data);
 
-        showToast("Relatório salvo!"); 
+        showToast("Relatório salvo com sucesso!"); 
         document.getElementById('ocorrencias-novo').classList.add('hidden'); 
         document.getElementById('ocorrencias-menu-view').classList.remove('hidden');
 
-    } catch(e) { console.error(e); showToast(e.message || "Erro.", "error"); } 
-    finally { isSaving = false; btn.disabled = false; btn.innerHTML = originalText; }
+    } catch(e) { 
+        console.error(e); 
+        showToast(e.message || "Erro ao salvar.", "error"); 
+    } 
+    finally { 
+        isSaving = false; 
+        btn.disabled = false; 
+        btn.innerHTML = originalText; 
+    }
 }
 
 function updateFormStateUI() {
@@ -346,8 +550,25 @@ function updateFormStateUI() {
     if(!inputColab) return;
     inputColab.disabled = true; inputLider.disabled = true; inputInv.disabled = true; dataInputs.forEach(input => input.disabled = false); btnReject.classList.add('hidden'); btnDelete.classList.add('hidden'); btnSave.classList.remove('hidden');
     if (status === 'draft') {
-        statusBar.innerText = "Etapa 1: Preenchimento Inicial"; statusBar.className = "bg-indigo-900/40 text-indigo-200 px-4 py-3 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/20";
-        inputInfrator.disabled = true; inputInfrator.placeholder = "Reservado ao Inventário"; inputInfrator.classList.add('opacity-50'); inputColab.disabled = false; if (!inputColab.value) inputColab.value = myName; inputLider.value = ""; inputLider.placeholder = "Habilita após envio da Etapa 1"; inputInv.value = ""; inputInv.placeholder = "Habilita na Etapa 3"; btnSave.innerHTML = `Assinar e Enviar`;
+        statusBar.innerText = "Etapa 1: Abertura e Validação Imediata"; statusBar.className = "bg-indigo-900/40 text-indigo-200 px-4 py-3 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/20";
+        
+        inputInfrator.disabled = true; 
+        inputInfrator.placeholder = "Reservado ao Inventário"; 
+        inputInfrator.classList.add('opacity-50'); 
+        
+        inputColab.disabled = false; 
+        if (!inputColab.value) inputColab.value = myName; 
+        
+        // MUDANÇA: Campo Líder agora é habilitado imediatamente
+        inputLider.disabled = false; 
+        inputLider.value = ""; 
+        inputLider.placeholder = "Líder: Assine aqui para validar"; 
+        
+        inputInv.value = ""; 
+        inputInv.placeholder = "Habilita na Etapa Final"; 
+        
+        btnSave.innerHTML = `Validar e Enviar p/ Inventário`;
+        
         if(currentOccurrenceId) { btnDelete.classList.remove('hidden'); btnDelete.innerText = "Excluir Rascunho"; }
     } else if (status === 'pendente_lider') {
         statusBar.innerText = "Etapa 2: Aprovação do Líder"; statusBar.className = "bg-amber-900/40 text-amber-200 px-4 py-3 text-xs font-bold uppercase tracking-wider text-center border-b border-amber-500/20"; dataInputs.forEach(input => input.disabled = true);

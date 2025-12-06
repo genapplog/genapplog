@@ -15,15 +15,30 @@ export function initClientsModule(collectionRef) {
     if (unsubscribeClients) unsubscribeClients();
     document.getElementById('client-list-tbody').innerHTML = '<tr><td colspan="2" class="px-6 py-12 text-center text-slate-400"><div class="flex justify-center items-center gap-2"><span class="spinner spinner-dark"></span><span>Carregando dados...</span></div></td></tr>';
     try {
-        unsubscribeClients = onSnapshot(query(collectionRef), (snapshot) => {
-            const clients = [];
-            snapshot.forEach(doc => clients.push({ id: doc.id, ...doc.data() }));
-            clients.sort((a, b) => a.name.localeCompare(b.name));
-            clientCache.clear();
-            clients.forEach(c => clientCache.set(c.id, c));
-            filterAndRenderClients(collectionRef);
+        unsubscribeClients = onSnapshot(query(collectionRef), {
+            next: (snapshot) => {
+                const clients = [];
+                snapshot.forEach(doc => clients.push({ id: doc.id, ...doc.data() }));
+                
+                // Ordenação segura
+                clients.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+                
+                clientCache.clear();
+                clients.forEach(c => clientCache.set(c.id, c));
+                filterAndRenderClients(collectionRef);
+            },
+            error: (error) => {
+                // Se der erro (ex: Operador tentando ver Teste), o app NÃO TRAVA mais.
+                // Apenas mostra uma mensagem limpa na tabela.
+                console.warn("Acesso a Clientes negado:", error.code);
+                
+                const tbody = document.getElementById('client-list-tbody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="px-6 py-12 text-center text-slate-500 italic">Lista indisponível neste ambiente ou perfil.</td></tr>';
+                }
+            }
         });
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Erro ao iniciar listener:", e); }
     setupClientBindings(collectionRef);
 }
 
