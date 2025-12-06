@@ -73,43 +73,36 @@ export async function initRncModule(db, isTest) {
     });
 
     // --- LISTENER DE CHAMADOS (Lado do Líder) ---
-    // Escuta a coleção 'notifications' criada nos últimos 5 minutos
-    const notifPath = isTest ? 'notifications_test' : 'notifications'; // Se quiser separar teste
-    // Para simplificar, vamos usar o path global definido no config ou hardcoded aqui se preferir
-    // Assumindo que criamos 'notifications' na raiz de artifacts no passo 1:
-    const notificationsRef = collection(db, `artifacts/${globalDb.app.options.appId}/public/data/notifications`);
-    
-    // Filtra apenas notificações recentes (últimos 2 minutos) para não apitar coisas velhas ao abrir o app
-    const recentTime = new Date(Date.now() - 2 * 60 * 1000); 
-    const qNotif = query(notificationsRef, where('createdAt', '>', recentTime));
+    // Apenas conecta o "rádio" se for Chefe. Operador não precisa ouvir, só falar.
+    const myCurrentRole = getUserRole(); // Pega o cargo atual
 
-    // Adicionamos tratamento de erro para não travar o Operador
-    onSnapshot(qNotif, {
-        next: (snapshot) => {
-            snapshot.docChanges().forEach(change => {
-                if (change.type === "added") {
-                    const n = change.doc.data();
-                    const myRole = getUserRole();
-                    const myEmail = getAuth().currentUser?.email; // Usa getAuth importado
-                    
-                    // Se eu sou LIDER ou ADMIN, e não fui eu que chamei
-                    if ((myRole === 'LIDER' || myRole === 'ADMIN') && n.requesterEmail !== myEmail) {
-                        sendDesktopNotification("📢 Chamado Operacional", `Operador ${n.requesterName} solicita presença no ${n.local || 'Local'}.`);
-                        showToast(`📢 ${n.requesterName} está chamando!`, "warning");
+    if (myCurrentRole === 'ADMIN' || myCurrentRole === 'LIDER') {
+        const notificationsRef = collection(db, `artifacts/${globalDb.app.options.appId}/public/data/notifications`);
+        
+        // Filtra apenas notificações recentes (últimos 2 minutos)
+        const recentTime = new Date(Date.now() - 2 * 60 * 1000); 
+        const qNotif = query(notificationsRef, where('createdAt', '>', recentTime));
+
+        // Note: Não precisamos salvar o unsubscribe deste listener específico na variável global
+        // pois ele é condicional, mas o Firebase limpa sockets antigos automaticamente ao recarregar a página.
+        onSnapshot(qNotif, {
+            next: (snapshot) => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === "added") {
+                        const n = change.doc.data();
+                        const myEmail = getAuth().currentUser?.email; 
+                        
+                        // Garante que não notifica a si mesmo (caso o líder faça um teste de chamado)
+                        if (n.requesterEmail !== myEmail) {
+                            sendDesktopNotification("📢 Chamado Operacional", `Operador ${n.requesterName} solicita presença no ${n.local || 'Local'}.`);
+                            showToast(`📢 ${n.requesterName} está chamando!`, "warning");
+                        }
                     }
-                }
-            });
-        },
-        error: (error) => {
-            // Se der erro de permissão (code permission-denied), é porque sou Operador.
-            // Apenas ignoramos silenciosamente.
-            if (error.code === 'permission-denied') {
-                console.log("Modo Operador: Escuta de chamados administrativos desativada.");
-            } else {
-                console.error("Erro no listener de notificações:", error);
-            }
-        }
-    });
+                });
+            },
+            error: (error) => console.log("Listener de Notificações desativado ou sem permissão.")
+        });
+    }
 
     if (!bindingsInitialized) {
         setupRncBindings();
