@@ -1,6 +1,6 @@
 # 📦 AppLog - Sistema de Gestão Logística
 
-Sistema PWA (Progressive Web App) desenvolvido internamente para otimização de processos de expedição, controle de divergências (RNC) e geração de etiquetas logísticas.
+Sistema PWA (Progressive Web App) desenvolvido internamente para otimização de processos de expedição, controle de divergências (RD) e geração de etiquetas logísticas.
 
 ## 🚀 Funcionalidades Principais
 
