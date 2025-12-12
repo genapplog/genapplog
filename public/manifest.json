@@ -1,0 +1,22 @@
+{
+  "name": "AppLog - Sistema Logístico",
+  "short_name": "AppLog",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./img/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./img/icon-512.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+
+}

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AppLog">
+    <link rel="apple-touch-icon" href="./img/icon-512.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppLog - Sistema Logístico</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22[http://www.w3.org/2000/svg%22](http://www.w3.org/2000/svg%22) viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="bg-slate-900 text-slate-100 h-full overflow-hidden">
+    <div id="toast-container"></div>
+    <div class="flex h-full flex-col md:flex-row relative">
+        <div id="test-mode-strip" class="hidden absolute top-0 left-0 w-full h-1.5 z-50 bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.7)]"></div>
+        
+        <div class="w-full md:w-20 md:hover:w-64 bg-slate-950 text-white flex-shrink-0 flex flex-col shadow-xl z-30 border-r border-slate-800 transition-all duration-300 ease-in-out group overflow-hidden">
+            <div class="p-4 flex justify-between items-center border-b border-slate-800 md:border-none relative overflow-hidden flex-shrink-0 h-[72px]">
+                <div id="test-mode-bg-indicator" class="absolute inset-0 bg-amber-500/10 hidden pointer-events-none"></div>
+                
+                <button id="app-logo-btn" class="flex items-center gap-3 group/btn focus:outline-none transition-transform active:scale-95 relative z-10 w-full">
+                    <div class="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-900/20 group-hover/btn:bg-indigo-500 transition-colors flex-shrink-0" id="logo-bg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    </div>
+                    <div class="flex flex-col items-start md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden">
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-white group-hover/btn:text-indigo-400 transition-colors">AppLog</h2>
+                        <span id="env-badge" class="text-[10px] uppercase tracking-wider font-bold text-emerald-400 bg-emerald-900/30 px-1.5 rounded border border-emerald-800">Produção</span>
+                    </div>
+                </button>
+                
+                <button id="mobile-menu-btn" class="md:hidden text-indigo-400 hover:text-white focus:outline-none p-2 rounded hover:bg-slate-800 transition relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+            
+            <div id="sidebar-content" class="hidden md:flex flex-col flex-1 overflow-y-auto overflow-x-hidden p-4 pt-2 md:pt-0">
+                <nav id="sidebar-nav" class="space-y-1 flex-1">
+                    <a href="#" data-page="Inicio" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Início</span>
+                    </a>
+                    <a href="#" data-page="dashboard" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg bg-slate-800 text-indigo-400 font-medium transition-all duration-200 border-l-4 border-indigo-500 shadow-sm">
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Dashboard</span>
+                    </a>
+                    <a href="#" data-page="clientes" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
+                        <svg class="w-8 h-6 flex-shrink-0 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Checklist Expedição</span>
+                    </a>
+                    <a href="#" data-page="etiquetas" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
+                        <svg class="w-7 h-6 flex-shrink-0 -ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Impressão Etiquetas</span>
+                    </a>
+                    <a href="#" data-page="ocorrencias" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Divergências</span>
+                    </a>                  
+                    <a href="#" data-page="perfil" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Minha Conta</span>
+                    </a>
+
+                    <a href="#" id="nav-link-config" data-page="configuracoes" class="nav-link hidden flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent">
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">Configurações</span>
+                    </a>
+                    
+                    <a href="#" data-page="tv-mode" class="nav-link flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200 border-l-4 border-transparent mt-4">
+                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap delay-75">TV</span>
+                    </a>
+                </nav>
+                
+                <div class="mt-8 pt-6 border-t border-slate-800">
+                    <button id="btn-open-login" class="flex items-center gap-3 mb-2 w-full text-left hover:bg-slate-800 p-2 rounded transition group/login focus:outline-none">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 group-hover/login:bg-slate-700 flex items-center justify-center flex-shrink-0 border border-slate-700 relative transition">
+                            <span class="text-xs font-bold text-indigo-400">ID</span>
+                            <div id="admin-indicator" class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full hidden border border-slate-800" title="Modo Admin"></div>
+                        </div>
+                        <div class="overflow-hidden md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                            <p class="text-xs font-medium text-indigo-400 group-hover/login:text-white transition" id="user-role-label">Entrar como Admin</p>
+                            <p id="userIdDisplay" class="text-[10px] text-slate-500 truncate font-mono">Anônimo</p>
+                        </div>
+                    </button>
+                    <button id="btn-logout" class="hidden w-full text-xs text-red-400 hover:text-red-300 flex items-center justify-center gap-2 mt-2 py-2 border border-red-900/30 rounded bg-red-900/10 hover:bg-red-900/20 transition overflow-hidden">
+                        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <span class="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Sair</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 h-full overflow-y-auto overflow-x-hidden bg-slate-900 relative w-full" id="main-content">
+            <div class="p-4 md:p-10 pb-20">
+                
+                <div id="Inicio" class="page-content hidden max-w-6xl mx-auto h-full flex flex-col items-center justify-center text-center min-h-[60vh]">
+                    <div class="bg-slate-800/50 p-10 rounded-3xl border border-slate-700 shadow-2xl max-w-lg mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+                        <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        </div>
+                        <h1 class="text-4xl font-bold text-white mb-3">Bem-vindo ao AppLog</h1>
+                        <p class="text-lg text-slate-400 mb-2 leading-relaxed">Selecione uma opção no menu para começar.</p>
+                        <div id="dash-env-warning" class="hidden mt-4 bg-amber-900/30 border border-amber-600/50 text-amber-200 px-4 py-2 rounded-lg text-sm font-mono">⚠️ MODO DE TESTE ATIVO ⚠️</div>
+                    </div>
+                </div>
+
+                <div id="dashboard" class="page-content active fade-in max-w-7xl mx-auto">
+                    <header class="mb-6 flex flex-col md:flex-row justify-between items-end gap-4">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-white">Dashboard Operacional</h1>
+                            <p class="text-indigo-400 mt-1">Indicadores de Divergências de Estoque.</p>
+                        </div>
+                        <div class="bg-slate-800 p-2 rounded-xl border border-slate-700 flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                            <div class="flex gap-2">
+                                <input type="date" id="dash-filter-start" class="bg-slate-700 border border-slate-600 rounded px-3 py-1.5 text-white text-xs focus:outline-none focus:border-indigo-500 [color-scheme:dark]" title="Data Início">
+                                <input type="date" id="dash-filter-end" class="bg-slate-700 border border-slate-600 rounded px-3 py-1.5 text-white text-xs focus:outline-none focus:border-indigo-500 [color-scheme:dark]" title="Data Fim">
+                            </div>
+                            <div class="flex gap-2 flex-wrap justify-end">
+                                <button id="btn-dash-filter-apply" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg font-medium transition text-xs flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg> Filtrar
+                                </button>
+                                <button id="btn-dash-filter-clear" class="border border-slate-600 text-indigo-400 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-medium transition text-xs">Limpar</button>
+                                
+                                <button id="btn-dash-export" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-medium transition text-xs flex items-center gap-1" title="Exportar RD">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> RD
+                                </button>
+
+                                <button id="btn-dash-export-pallet" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg font-medium transition text-xs flex items-center gap-1" title="Exportar Etiquetas">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg> Etiq.
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10"><svg class="w-16 h-16 text-indigo-500" fill="currentColor" viewBox="0 0 24 24"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg></div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase tracking-wider">Ocorrências Concluídas</h4>
+                            <p class="text-4xl font-bold text-white mt-2" id="dash-total-oc">0</p>
+                            <span class="text-xs text-slate-500 mt-1">Total no período</span>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10"><svg class="w-16 h-16 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase tracking-wider">Tipo Mais Frequente</h4>
+                            <p class="text-3xl font-bold text-amber-400 mt-2" id="dash-top-type">-</p>
+                            <span class="text-xs text-slate-500 mt-1">Maior incidência</span>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-4 opacity-10"><svg class="w-16 h-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                            <h4 class="text-slate-400 text-xs font-bold uppercase tracking-wider">Último Registro</h4>
+                            <p class="text-xl font-bold text-emerald-400 mt-3" id="dash-last-date">-</p>
+                            <span class="text-xs text-slate-500 mt-1">Data do último RD</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                            <h4 class="text-slate-200 font-bold mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Ocorrências por Tipo</h4>
+                            <div class="relative h-64 w-full"><canvas id="chartOcType"></canvas></div>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                            <h4 class="text-slate-200 font-bold mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Ocorrências por Local</h4>
+                            <div class="relative h-64 w-full"><canvas id="chartOcLocal"></canvas></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                            <h4 class="text-slate-200 font-bold mb-4 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-rose-500"></span> Top 10 Causadores 
+                            </h4>
+                            <div class="relative h-80 w-full">
+                                <canvas id="chartOcCausador"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                            <h4 class="text-slate-200 font-bold mb-4 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Top 10 Identificadores
+                            </h4>
+                            <div class="relative h-80 w-full">
+                                <canvas id="chartOcIdentificador"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-lg mb-10">
+                        <div class="p-4 border-b border-slate-700 bg-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <h3 class="font-bold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Histórico Recente
+                            </h3>
+                            <div class="relative w-full md:w-64">
+                                <input 
+                                    type="text" 
+                                    id="history-search-input" 
+                                    name="search_dash_no_autofill_999"
+                                    autocomplete="off" 
+                                    readonly 
+                                    onfocus="this.removeAttribute('readonly');"
+                                    placeholder="Buscar Cliente ou Embarque..." 
+                                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors shadow-sm relative z-0">
+                                
+                                <button id="history-search-clear" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white cursor-pointer z-10 font-bold" title="Limpar busca">✕</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm text-left">
+                                <thead class="bg-slate-950 text-slate-400 font-medium uppercase text-xs">
+                                    <tr><th class="px-4 py-3">Data</th><th class="px-4 py-3">Embarque / Cliente</th><th class="px-4 py-3">Tipo</th><th class="px-4 py-3 text-right">Ação</th></tr>
+                                </thead>
+                                <tbody id="history-list-tbody" class="divide-y divide-slate-700">
+                                    <tr><td colspan="4" class="px-4 py-8 text-center text-slate-500">Carregando dados...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="clientes" class="page-content hidden fade-in max-w-6xl mx-auto">
+                    <div id="client-list-section">
+                        <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                            <div>
+                                <h1 class="text-2xl md:text-3xl font-bold text-white">Checklist de Expedição</h1>
+                                <p class="text-indigo-400 mt-1">Gerencie os checklist específicos de cada cliente.</p>
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+                                <div class="relative w-full md:w-64 group">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                        <svg class="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    </div>
+
+                                    <input 
+                                        type="text" 
+                                        id="client-search" 
+                                        name="search_query_no_autofill_random_123" 
+                                        autocomplete="off" 
+                                        readonly 
+                                        onfocus="this.removeAttribute('readonly');"
+                                        class="block w-full pl-10 pr-10 py-2.5 border border-slate-700 rounded-lg leading-5 bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all duration-200 shadow-sm relative z-0" 
+                                        placeholder="Buscar cliente">
+                                    
+                                    <button id="clear-search-btn" class="hidden absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white hover:bg-slate-700 rounded-full transition-colors z-20 cursor-pointer" title="Limpar busca">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                                <button id="add-client-btn" class="hidden w-full md:w-auto bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-indigo-500 focus:ring-4 focus:ring-indigo-900 transition shadow-sm flex items-center justify-center gap-2 whitespace-nowrap">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                    Adicionar Cliente
+                                </button>
+                            </div>
+                        </header>
+                        <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-700">
+                                    <thead class="bg-slate-900">
+                                        <tr>
+                                            <th class="px-6 py-4 text-left text-xs font-semibold text-indigo-400 uppercase tracking-wider">CLIENTE</th>
+                                            <th class="px-6 py-4 text-right text-xs font-semibold text-indigo-400 uppercase tracking-wider"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-slate-800 divide-y divide-slate-700" id="client-list-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="client-view-section" class="hidden">
+                        <header class="mb-6">
+                            <button id="view-back-btn" class="text-indigo-400 hover:text-white mb-4 flex items-center gap-1 font-medium transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                Voltar para lista
+                            </button>
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-900/50 p-3 rounded-full border border-indigo-500/30">
+                                    <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold text-white" id="view-client-name"></h1>
+                                    <p class="text-indigo-400 text-sm">Checklist Operacional</p>
+                                </div>
+                                <button id="view-print-btn" class="ml-auto flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                    Imprimir Ficha
+                                </button>
+                            </div>
+                        </header>
+                        <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-700">
+                                    <thead class="bg-slate-900">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-indigo-400 uppercase w-1/3 min-w-[150px]">Ponto de Vistoria</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-indigo-400 uppercase w-1/3 min-w-[120px] bg-blue-900/20">Carga Direta</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-indigo-400 uppercase w-1/3 min-w-[120px] bg-orange-900/20">Carga Fracionada</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-700" id="view-checklist-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="client-edit-section" class="hidden">
+                        <header class="mb-6">
+                            <h1 class="text-2xl font-bold text-white">Editar Checklist</h1>
+                            <p class="text-indigo-400 mt-1 flex items-center gap-2">Editando: <span id="edit-client-name" class="font-semibold text-indigo-400"></span></p>
+                        </header>
+                        <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-4 md:p-6">
+                            <div class="overflow-x-auto mb-6">
+                                <table class="min-w-full divide-y divide-slate-700">
+                                    <thead class="bg-slate-900">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-indigo-400 uppercase min-w-[140px]">Ponto de Vistoria</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-indigo-400 uppercase bg-blue-900/20 min-w-[180px]">Carga Direta</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold text-indigo-400 uppercase bg-orange-900/20 min-w-[180px]">Carga Fracionada</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-700" id="edit-checklist-tbody"></tbody>
+                                </table>
+                            </div>
+                            <div class="flex flex-col md:flex-row justify-end gap-3 border-t border-slate-700 pt-4">
+                                <button id="edit-cancel-btn" class="w-full md:w-auto px-5 py-2.5 rounded-lg border border-slate-600 text-indigo-400 font-medium hover:bg-slate-700 transition">Cancelar</button>
+                                <button id="edit-save-btn" class="w-full md:w-auto px-5 py-2.5 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 shadow-sm transition">Salvar Alterações</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="etiquetas" class="page-content hidden fade-in">
+                    <div class="max-w-7xl mx-auto">
+                        <div id="zpl-menu">
+                           <header class="mb-10 border-b border-slate-700 pb-6">
+                                <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Impressão de Etiquetas</h1>
+                                <p class="text-indigo-400 max-w-2xl text-sm md:text-base">Selecione o modelo desejado para iniciar a impressão.</p>
+                            </header>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <button id="btn-open-amazon" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-8 rounded-2xl flex flex-col items-center text-center group shadow-lg w-full">
+                                    <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Modelo Amazon</h3>
+                                </button>
+                                <button id="btn-open-manual" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-8 rounded-2xl flex flex-col items-center text-center group shadow-lg w-full">
+                                    <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Modelo Manual</h3>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="zpl-tool-amazon" class="hidden">
+                            <button id="btn-back-zpl" class="text-indigo-400 hover:text-white flex items-center gap-2 mb-6 transition group">
+                                <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                </span>
+                                <span class="font-medium">Voltar para modelos</span>
+                            </button>
+                            <div class="bg-slate-800 rounded-xl border border-slate-700 p-6 md:p-8 shadow-lg">
+                                <div class="flex items-center gap-3 mb-8 pb-6 border-b border-slate-700">
+                                    <div class="bg-orange-500 p-2 rounded-lg text-white">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M13.983 13.023c-1.284 1.587-3.656 1.956-5.955 1.28-1.925-.566-3.133-1.954-3.038-3.67.085-1.54 1.328-2.74 3.26-3.134 2.957-.604 5.282.46 5.733 3.056v2.468zm-1.76-1.48c-.057-.605-.33-1.057-.908-1.123-1.114-.133-1.796.52-1.767 1.472.023.774.633 1.217 1.368 1.17 1.048-.066 1.345-.718 1.307-1.52zm6.22 7.38c-.56 1.02-2.367 1.87-4.563 2.01-3.395.217-6.658-1.34-7.94-3.766-.113-.217.047-.453.274-.377 2.376.84 5.044 1.19 7.874.037.302-.122.707.057.9.34.302.444.97 1.056 1.453 1.056.16 0 .33-.047.462-.122.208-.113.462.132.217.49-.085.123-.123.245-.283.33zm-2.282-5.98c.15 0 .245.075.273.236v3.584c0 .18-.122.283-.283.283-.207 0-.414-.075-.575-.226-.84.773-2.112 1.16-3.62 1.037-2.235-.18-3.848-1.604-3.98-3.603-.14-2.18 1.462-4.122 4.338-4.622 2.245-.396 3.46.15 3.773.604v-1.113c-.085-1.48-1.132-2.358-2.867-2.235-1.34.094-2.386.67-2.763 1.726-.076.217-.312.292-.5.226l-1.51-.547c-.208-.075-.264-.31-.15-.51.877-1.556 2.782-2.5 5.13-2.67 3.075-.216 4.876 1.293 5.008 3.943v3.96z"/></svg>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-white">Etiqueta Amazon</h2>
+                                </div>
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                    <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 h-fit">
+                                        <div class="space-y-5">
+                                            <div>
+                                                <label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Tamanho da Etiqueta</label>
+                                                <select id="selectTamanho" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"><option value="4x6">10cm x 15cm (4x6")</option><option value="4x4">10cm x 8cm (4x4")</option></select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">CD Destino</label>
+                                                <select id="selectCdAmazon" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                    <option value="GRU5">GRU5 - Cajamar, SP</option>
+                                                    <option value="XBRA">XBRA - Cajamar, SP</option>
+                                                    <option value="XBRB">XBRB - Cabo De S. Agostinho</option>
+                                                    <option value="XBRT">XBRT - Cajamar, SP</option>
+                                                    <option value="XBRZ">XBRZ - Cajamar, SP</option>
+                                                    <option value="CNF1">CNF1 - Betim, MG</option>
+                                                    <option value="BSB1">BSB1 - Brasilia, DF</option>
+                                                    <option value="POA1">POA1 - Nova Santa Rita</option>
+                                                    <option value="GIG1">GIG1 - Sao Joao De Meriti</option>
+                                                    <option value="REC1">REC1 - Cabo de S. Agostinho</option>
+                                                    <option value="FOR2">FOR2 - Itaitinga, CE</option>
+                                                </select>
+                                            </div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Chave NF (44 dígitos)</label><input type="text" id="inputChaveNf" maxlength="44" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Pedido de Venda</label><input type="text" id="inputPedido" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Total de Volumes</label><input type="number" id="inputQuantidadeTotal" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Início Seq.</label><input type="number" id="inputCaixaInicial" value="1" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
+                                                <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Fim Seq.</label><input type="number" id="inputCaixaFinal" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-1 lg:col-span-2 flex flex-col gap-6">
+                                        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 flex-1">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <h3 class="font-bold text-white">Visualização</h3>
+                                                <button id="btn-toggle-zpl-amazon" class="text-xs text-indigo-400 hover:text-indigo-300 border border-indigo-900/50 bg-indigo-900/20 px-3 py-1 rounded transition">Mostrar Código ZPL (Técnico)</button>
+                                            </div>
+                                            <div id="box-zpl-amazon" class="hidden mb-4"><label class="text-[10px] text-slate-500 block mb-1">Código ZPL Gerado:</label><textarea id="zplCode" class="w-full h-32 bg-slate-950 border border-slate-700 rounded-lg p-2 text-[10px] font-mono text-green-400 resize-none focus:outline-none" readonly></textarea></div>
+                                            <div id="previewContainer" class="w-full bg-slate-900 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center p-4 aspect-[2/1] relative overflow-hidden"><span id="placeholderText" class="text-slate-500 text-sm">Preencha os dados e clique em Gerar.</span></div>
+                                        </div>
+                                        <div class="flex gap-4">
+                                            <button id="generateButton" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>Gerar Etiqueta</button>
+                                            <button id="printButton" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Baixar PDF</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="zpl-tool-manual" class="hidden">
+                            <button id="btn-back-zpl-manual" class="text-indigo-400 hover:text-white flex items-center gap-2 mb-6 transition group">
+                                <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                </span>
+                                <span class="font-medium">Voltar para modelos</span>
+                            </button>
+                            <div class="bg-slate-800 rounded-xl border border-slate-700 p-6 md:p-8 shadow-lg">
+                                <div class="flex items-center gap-3 mb-8 pb-6 border-b border-slate-700">
+                                    <div class="bg-indigo-500 p-2 rounded-lg text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+                                    <h2 class="text-xl font-bold text-white">Etiqueta Manual</h2>
+                                </div>
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                    <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 h-fit">
+                                        <div class="space-y-4">
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Tamanho</label><select id="selectTamanhoManual" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none" disabled><option value="4x3.15">10cm x 8cm</option></select></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Documento</label><input type="text" id="inputManualDocumento" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Nota Fiscal</label><input type="text" id="inputManualNf" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Solicitante</label><input type="text" id="inputManualSolicitante" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Destinatário</label><input type="text" id="inputManualDestinatario" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Cidade</label><input type="text" id="inputManualCidade" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Transportadora</label><input type="text" id="inputManualTransportadora" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div class="pt-4 border-t border-slate-700"><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Qtd Total</label><input type="number" id="inputManualQtdTotal" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Início Seq.</label><input type="number" id="inputManualCaixaIni" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                                <div><label class="block text-xs font-medium text-indigo-400 uppercase tracking-wide mb-1.5">Fim Seq.</label><input type="number" id="inputManualCaixaFim" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-2.5 outline-none"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-1 lg:col-span-2 flex flex-col gap-6">
+                                        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 flex-1">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <h3 class="font-bold text-white">Visualização</h3>
+                                                <button id="btn-toggle-zpl-manual" class="text-xs text-indigo-400 hover:text-indigo-300 border border-indigo-900/50 bg-indigo-900/20 px-3 py-1 rounded transition">Mostrar Código ZPL (Técnico)</button>
+                                            </div>
+                                            <div id="box-zpl-manual" class="hidden mb-4"><label class="text-[10px] text-slate-500 block mb-1">Código ZPL Gerado:</label><textarea id="zplCodeManual" class="w-full h-32 bg-slate-950 border border-slate-700 rounded-lg p-2 text-[10px] font-mono text-green-400 resize-none focus:outline-none" readonly></textarea></div>
+                                            <div id="previewContainerManual" class="w-full bg-slate-900 border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center p-4 aspect-[2/1] relative overflow-hidden"><span id="placeholderTextManual" class="text-slate-500 text-sm">Preencha os dados e clique em Gerar.</span></div>
+                                        </div>
+                                        <div class="flex gap-4">
+                                            <button id="generateButtonManual" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>Gerar Etiqueta</button>
+                                            <button id="printButtonManual" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Baixar PDF</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ocorrencias" class="page-content hidden fade-in max-w-7xl mx-auto">
+                    <div id="ocorrencias-menu-view">
+                        <header class="mb-10 border-b border-slate-700 pb-6">
+                                <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Registro de Divergências</h1>
+                                <p class="text-indigo-400 max-w-2xl text-sm md:text-base">Selecione o modelo de divergência para continuar o registro.</p>
+                            </header>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                            <button id="btn-open-pallet-req" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-cyan-500 transition-all p-6 rounded-2xl flex items-center gap-6 group shadow-lg text-left w-full">
+                                <div class="bg-cyan-600 p-4 rounded-xl group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">Solicitação Etiqueta Palete</h3>
+                                    <p class="text-slate-400 text-sm">Solicitar etiqueta ao Estoque.</p>
+                                </div>
+                            </button>
+
+                            <button id="btn-open-oc-novo" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-indigo-500 transition-all p-6 rounded-2xl flex items-center gap-6 group shadow-lg text-left w-full">
+                                <div class="bg-indigo-600 p-4 rounded-xl group-hover:scale-110 transition-transform">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white mb-1 group-hover:text-indigo-400 transition-colors">Novo Relatório</h3>
+                                    <p class="text-slate-400 text-sm">Iniciar registro de avaria, falta ou sobra.</p>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-lg mb-8">
+                            <div class="p-4 border-b border-slate-700 bg-slate-800/50 flex justify-between items-center">
+                                <h3 class="font-bold text-white flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    Divergências em Pendentes
+                                </h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-sm text-left">
+                                    <thead class="bg-slate-900 text-slate-400 font-medium uppercase text-xs">
+                                        <tr>
+                                            <th class="px-4 py-3">Data</th>
+                                            <th class="px-4 py-3">Embarque / Cliente</th>
+                                            <th class="px-4 py-3">Tipo</th>
+                                            <th class="px-4 py-3">Status</th>
+                                            <th class="px-4 py-3 text-right">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pending-list-tbody" class="divide-y divide-slate-700">
+                                        <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Carregando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-lg">
+                            <div class="px-6 py-4 border-b border-slate-700 bg-slate-800/50">
+                                <h3 class="font-bold text-white flex items-center gap-2 text-lg">
+                                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                    Etiquetas Palete Pendentes
+                                </h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-sm text-left">
+                                    <thead class="bg-slate-900 text-slate-400 font-medium uppercase text-xs">
+                                        <tr>
+                                            <th class="px-4 py-3">Data</th>
+                                            <th class="px-4 py-3">Local (Emb/Box)</th>
+                                            <th class="px-4 py-3">Produto</th>
+                                            <th class="px-4 py-3">Qtd</th>
+                                            <th class="px-4 py-3 text-right">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pallet-list-tbody" class="divide-y divide-slate-700">
+                                        <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Nenhuma solicitação pendente.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="pallet-req-form" class="hidden">
+                        <button id="btn-back-pallet" class="text-indigo-400 hover:text-white flex items-center gap-2 mb-6 transition group">
+                            <span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg></span>
+                            <span class="font-medium">Voltar</span>
+                        </button>
+                        
+                        <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden max-w-4xl mx-auto border border-slate-700">
+                            <div class="bg-cyan-900/40 text-cyan-200 px-4 py-3 text-xs font-bold uppercase tracking-wider text-center border-b border-cyan-500/20 backdrop-blur-sm">Nova Solicitação</div>
+                            
+                            <div class="p-6 md:p-8 space-y-6">
+                                <div class="bg-cyan-900/20 border border-cyan-500/30 p-4 rounded-lg flex flex-col md:flex-row items-center gap-4">
+                                    <div class="p-3 bg-cyan-600 rounded-full text-white shrink-0">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                    </div>
+                                    <div class="flex-1 w-full">
+                                        <label class="block text-[10px] font-bold text-cyan-300 uppercase mb-1">Bipe o Produto (GS1-128 ou EAN)</label>
+                                        <input type="text" id="req-smart-scanner" class="w-full bg-slate-900 border border-cyan-500/50 rounded px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-slate-600 transition" placeholder="O cursor deve estar aqui para ler">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-slate-700 border border-slate-700 rounded-lg overflow-hidden">
+                                    <div class="bg-slate-800 p-4">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Item / Código</label>
+                                        <input type="text" id="req-item" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-white focus:border-cyan-500 outline-none">
+                                    </div>
+                                    <div class="bg-slate-800 p-4">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Lote</label>
+                                        <input type="text" id="req-lote" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-white focus:border-cyan-500 outline-none">
+                                    </div>
+                                    <div class="bg-slate-800 p-4">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Quantidade</label>
+                                        <input type="number" id="req-qtd" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-white focus:border-cyan-500 outline-none">
+                                    </div>
+
+                                    <div class="bg-slate-800 p-4">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Embarque</label>
+                                        <input type="text" id="req-embarque" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-white focus:border-cyan-500 outline-none">
+                                    </div>
+                                    <div class="bg-slate-800 p-4">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Box</label>
+                                        <input type="text" id="req-box" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-white focus:border-cyan-500 outline-none">
+                                    </div>
+                                    <div class="bg-slate-800 p-4">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Checkout</label>
+                                        <input type="text" id="req-checkout" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-white focus:border-cyan-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end pt-4 gap-3">
+                                    <button id="btn-cancel-req" class="px-5 py-2 rounded-lg border border-slate-600 text-indigo-400 hover:bg-slate-700 font-medium transition text-sm">Cancelar</button>
+                                    <button id="btn-save-req" class="px-6 py-2 rounded-lg bg-cyan-600 text-white font-medium hover:bg-cyan-500 shadow-lg shadow-cyan-900/20 transition text-sm flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                        Enviar Solicitação
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ocorrencias-novo" class="hidden">
+                        <button id="btn-back-oc-form" class="text-indigo-400 hover:text-white flex items-center gap-2 mb-6 transition group"><span class="bg-slate-800 p-2 rounded-full group-hover:bg-slate-700 transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg></span><span class="font-medium">Voltar para Lista</span></button>
+                        <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden max-w-5xl mx-auto border border-slate-700 relative">
+                            <div id="form-status-bar" class="bg-indigo-900/40 text-indigo-200 px-4 py-3 text-xs font-bold uppercase tracking-wider text-center border-b border-indigo-500/20 backdrop-blur-sm">Nova Divergência</div>
+                            <div class="bg-slate-950 text-center py-4 border-b border-slate-700">
+                                <h2 class="text-white font-bold text-xl uppercase tracking-wide flex justify-center items-center gap-2">
+                                    <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                                    Registro de Divergência
+                                </h2>
+                            </div>
+                            <div class="p-6 bg-slate-900 relative space-y-6" id="form-content-area">
+                                <div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 border-b border-slate-800 pb-1">Dados de Rastreabilidade</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div><label class="text-xs text-slate-400 mb-1 block">Embarque</label><input type="text" id="form-embarque" class="data-input w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:border-indigo-500 outline-none transition" placeholder=""></div><div><label class="text-xs text-slate-400 mb-1 block">Cliente</label><input type="text" id="form-nf" class="data-input w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:border-indigo-500 outline-none transition" placeholder=""></div><div><label class="text-xs text-slate-400 mb-1 block">Data da Ocorrência</label><input type="date" id="form-data" class="data-input w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:border-indigo-500 outline-none transition [color-scheme:dark]"></div></div></div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Classificação do Problema</h3><div class="grid grid-cols-2 gap-2"><label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3"><input type="radio" name="oc_tipo" value="FALTA" class="data-input text-indigo-500 focus:ring-0"><span class="text-sm font-bold text-red-400">FALTA</span></label><label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3"><input type="radio" name="oc_tipo" value="SOBRA" class="data-input text-indigo-500 focus:ring-0"><span class="text-sm font-bold text-blue-400">SOBRA</span></label><label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3"><input type="radio" name="oc_tipo" value="AVARIA" class="data-input text-indigo-500 focus:ring-0"><span class="text-sm font-bold text-amber-400">AVARIA</span></label><label class="border border-slate-700 rounded p-3 cursor-pointer hover:bg-slate-800 transition flex items-center gap-3"><input type="radio" name="oc_tipo" value="FALTA_INTERNA" class="data-input text-indigo-500 focus:ring-0"><span class="text-sm font-bold text-purple-400">FALTA INT.</span></label></div></div>
+                                        <div class="flex flex-wrap gap-3 p-3 bg-slate-800/50 rounded border border-slate-700/50 items-center">
+                                        <span class="text-xs font-bold text-slate-500 uppercase mr-1">Local:</span>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="oc_local" value="ARMAZENAGEM" class="data-input rounded-full border-slate-600 text-indigo-500 focus:ring-0 bg-slate-900">
+                                            <span class="text-sm text-indigo-400">Armazenagem</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="oc_local" value="ESTOQUE" class="data-input rounded-full border-slate-600 text-indigo-500 focus:ring-0 bg-slate-900">
+                                            <span class="text-sm text-indigo-400">Estoque</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="oc_local" value="SEPARAÇÃO" class="data-input rounded-full border-slate-600 text-indigo-500 focus:ring-0 bg-slate-900">
+                                            <span class="text-sm text-indigo-400">Separação</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="oc_local" value="CHECKOUT" class="data-input rounded-full border-slate-600 text-indigo-500 focus:ring-0 bg-slate-900">
+                                            <span class="text-sm text-indigo-400">Checkout</span>
+                                        </label>
+                                    </div>
+                                    </div>
+                                    <div><h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Relato Detalhado</h3><textarea id="form-obs" class="data-input w-full h-40 bg-slate-800 border border-slate-600 rounded p-3 text-slate-200 text-sm resize-none focus:border-indigo-500 transition-colors" placeholder="Se necessário, descreva os detalhes do ocorrido"></textarea></div>
+                                </div>
+                                
+                                <div class="bg-indigo-900/20 border border-indigo-500/30 p-3 rounded-lg mb-4 flex flex-col md:flex-row items-center gap-4">
+                                    <div class="p-2 bg-indigo-600 rounded-full text-white shrink-0">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                    </div>
+                                    <div class="flex-1 w-full">
+                                        <label class="block text-[10px] font-bold text-indigo-300 uppercase mb-1">Leitura de Etiqueta (GS1-128)</label>
+                                        <input type="text" id="smart-scanner-input" class="w-full bg-slate-900 border border-indigo-500/50 rounded px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-600" placeholder="Clique aqui e bipe a etiqueta">
+                                    </div>
+                                </div>
+
+                                <div class="border border-slate-700 rounded-lg overflow-hidden">
+                                    <table class="w-full text-xs text-left"><thead class="bg-slate-950 text-slate-400 font-medium border-b border-slate-700"><tr><th class="p-2 border-r border-slate-700 w-24">CÓDIGO</th><th class="p-2 border-r border-slate-700">DESCRIÇÃO DO ITEM</th><th class="p-2 border-r border-slate-700 w-24">LOTE</th><th class="p-2 border-r border-slate-700 w-20 text-center">QTD (CX)</th><th class="p-2 w-24 text-center">ENDEREÇO</th></tr></thead><tbody class="bg-slate-800"><tr><td class="p-0 border-r border-slate-700"><input type="text" id="form-item-cod" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td><td class="p-0 border-r border-slate-700"><input type="text" id="form-item-desc" class="data-input w-full bg-transparent p-2 text-white outline-none"></td><td class="p-0 border-r border-slate-700"><input type="text" id="form-item-lote" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td><td class="p-0 border-r border-slate-700"><input type="number" id="form-item-qtd" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td><td class="p-0"><input type="text" id="form-item-end" class="data-input w-full bg-transparent p-2 text-white text-center outline-none"></td></tr></tbody></table>
+                                </div>
+                                <div class="flex flex-wrap gap-4 p-3 bg-slate-800/50 rounded border border-slate-700/50 items-center"><span class="text-xs font-bold text-slate-500 uppercase mr-2">Condição da Embalagem:</span><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="check-amassada" class="data-input rounded border-slate-600 text-indigo-500 focus:ring-0"><span class="text-sm text-indigo-400">Amassada</span></label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="check-rasgada" class="data-input rounded border-slate-600 text-indigo-500 focus:ring-0"><span class="text-sm text-indigo-400">Rasgada</span></label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="check-vazamento" class="data-input rounded border-slate-600 text-indigo-500 focus:ring-0"><span class="text-sm text-indigo-400">Vazamento</span></label><input type="text" id="form-outros-emb" placeholder="Outros detalhes" class="data-input ml-auto bg-slate-900 border-b border-slate-600 text-xs text-white px-2 py-1 outline-none w-48 focus:border-indigo-500 transition"></div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-slate-700 border border-slate-700 rounded-lg overflow-hidden mt-6">
+                                    <div class="bg-slate-800 p-4"><label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Origem / Responsável</label><input type="text" id="form-infrator" placeholder="Preenchido pelo Inventário" class="data-input w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white text-sm focus:border-indigo-500 transition-colors"></div>
+                                    <div class="bg-slate-800 p-4 relative"><label class="text-[10px] font-bold text-indigo-400 uppercase block mb-2">1. Identificado Por</label><input type="text" id="form-ass-colab" placeholder="Assinar" class="w-full bg-slate-900 border border-indigo-900/50 rounded px-3 py-2 text-white text-sm focus:border-indigo-500 transition-colors"></div>
+                                    <div class="bg-slate-800 p-4" id="box-lider"><label class="text-[10px] font-bold text-amber-500 uppercase block mb-2">2. Validação Liderança</label><input type="text" id="form-ass-lider" placeholder="Aguardando" disabled class="w-full bg-slate-900/50 border border-slate-700 rounded px-3 py-2 text-slate-500 text-sm"></div>
+                                </div>
+                                <div class="mt-2 bg-slate-800 p-4 rounded border border-slate-700" id="box-inv"><div class="flex items-center gap-4"><div class="bg-blue-900/20 p-2 rounded text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="flex-1"><label class="text-[10px] font-bold text-blue-400 uppercase block mb-1">3. Conclusão Inventário</label><input type="text" id="form-ass-inv" placeholder="Aguardando validação final" disabled class="w-full bg-slate-900/50 border border-slate-700 rounded px-3 py-2 text-slate-500 text-sm"></div></div></div>
+                            </div>
+                            <div class="bg-slate-950 p-4 flex flex-col md:flex-row justify-between items-center border-t border-slate-800 gap-4"><span id="form-action-desc" class="text-xs text-slate-400 italic">Preencha os dados iniciais para gerar o rascunho.</span><div class="flex gap-3"><button id="btn-cancel-occurrence" class="px-5 py-2 rounded-lg border border-slate-700 text-indigo-400 hover:bg-slate-800 font-medium transition text-sm">Cancelar</button><button id="btn-reject-occurrence" class="hidden px-5 py-2 rounded-lg bg-amber-900/20 border border-amber-800 text-amber-200 font-medium hover:bg-amber-900/50 transition text-sm">Solicitar Correção</button><button id="btn-delete-permanent" class="hidden px-5 py-2 rounded-lg bg-red-900/20 border border-red-800 text-red-200 font-medium hover:bg-red-900/50 transition text-sm">Excluir RD</button><button id="btn-save-occurrence" class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-lg shadow-indigo-900/20 transition text-sm flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Salvar e Avançar</button></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="configuracoes" class="page-content hidden fade-in max-w-4xl mx-auto">
+                    <header class="mb-8"><h1 class="text-2xl md:text-3xl font-bold text-white">Configurações</h1></header>
+                    <div class="bg-slate-800 p-12 rounded-xl shadow-lg border border-slate-700 text-center">
+                        <div class="max-w-2xl mx-auto mb-12 p-6 bg-slate-900/50 rounded-xl border border-slate-700">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">Ambiente de Execução</h3>
+                            <div class="flex items-center justify-center gap-4 mb-6"><span class="text-sm font-medium text-emerald-400">Produção</span><div class="relative inline-block w-14 h-8 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="env-toggle" id="env-toggle" class="toggle-checkbox absolute block w-8 h-8 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0 border-slate-600"/><label for="env-toggle" class="toggle-label block overflow-hidden h-8 rounded-full bg-slate-700 cursor-pointer border border-slate-600"></label></div><span class="text-sm font-medium text-amber-400">Teste</span></div>
+                            
+                            <div id="test-tools-section" class="hidden border-t border-slate-700 pt-6 flex flex-col gap-3">
+                                <p class="text-xs text-slate-400 mb-2">Ferramentas de Ambiente de Teste</p>
+                                <button id="btn-sync-prod-to-test" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold shadow-lg transition flex items-center justify-center gap-2 mx-auto w-full md:w-auto">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                                    Clonar Produção para Testes
+                                </button>
+                                <p class="text-[10px] text-slate-500 text-center italic mt-1">Ao clonar, todos os dados atuais de teste serão apagados.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="cfg-section-clients" class="max-w-2xl mx-auto mb-12 border-b border-slate-700 pb-12">
+                            <div class="mb-8"><h2 class="text-2xl font-bold text-white mb-2">Gestão Checklist</h2><p class="text-slate-400 text-sm">Atualize a lista de clientes e checklist de carregamento.</p></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"><button id="download-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">Baixar Modelo Carregamento</button><label for="file-upload" class="cursor-pointer px-4 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition shadow-lg flex items-center justify-center">Importar Carregamento<input id="file-upload" type="file" class="hidden" accept=".json"></label></div>
+                            <div id="import-status" class="hidden p-4 rounded-lg bg-slate-900 border border-slate-700 text-left"><p class="text-sm text-indigo-400 font-mono" id="import-status-text"></p></div>
+                        </div>
+                        
+                        <div id="cfg-section-team" class="max-w-2xl mx-auto mb-12 border-b border-slate-700 pb-12">
+                            <div class="mb-8"><h2 class="text-2xl font-bold text-white mb-2">Gestão de Equipe</h2><p class="text-slate-400 text-sm">Atualize a lista de usuários e seus cargos.</p></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"><button id="download-users-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">Baixar Modelo Equipe</button><label for="users-upload" class="cursor-pointer px-4 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-500 transition shadow-lg flex items-center justify-center">Importar Equipe<input id="users-upload" type="file" class="hidden" accept=".json"></label></div>
+                            <div id="users-import-status" class="hidden p-4 rounded-lg bg-slate-900 border border-slate-700 text-left"><p class="text-sm text-indigo-400 font-mono" id="users-import-status-text"></p></div>
+                        </div>
+                        
+                        <div id="cfg-section-products" class="max-w-2xl mx-auto mb-12 border-b border-slate-700 pb-12">
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-white mb-2">Base de Produtos</h2>
+                                <p class="text-slate-400 text-sm">Atualize a lista ou gerencie itens individuais.</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <button id="download-products-template-btn" class="px-4 py-3 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition border border-slate-600">Baixar Modelo</button>
+                                <label for="products-upload" class="cursor-pointer px-4 py-3 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-500 transition shadow-lg flex items-center justify-center">Importar JSON<input id="products-upload" type="file" class="hidden" accept=".json"></label>
+                            </div>
+                            <div id="products-import-status" class="hidden p-4 rounded-lg bg-slate-900 border border-slate-700 text-left mb-8"><p class="text-sm text-indigo-400 font-mono" id="products-import-status-text"></p></div>
+                            <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                                <div class="flex items-center gap-2 mb-4"><svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><h4 class="text-sm font-bold text-white uppercase">Consultar / Excluir Item</h4></div>
+                                <div class="flex gap-2 mb-2"><input type="text" id="product-search-input" placeholder="Digite o DUN, Código ou Descrição" class="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-xs text-white focus:border-cyan-500 outline-none transition"><button id="btn-search-product" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded text-xs font-bold transition">Buscar</button></div>
+                                <div class="overflow-hidden rounded border border-slate-700 hidden" id="product-list-container"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 font-medium"><tr><th class="p-2">DUN (ID)</th><th class="p-2">Descrição</th><th class="p-2 text-right">Ação</th></tr></thead><tbody id="product-list-tbody" class="divide-y divide-slate-800 text-indigo-400"></tbody></table></div>
+                                <p id="product-search-msg" class="text-xs text-slate-500 mt-2 text-center hidden">Nenhum produto encontrado.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="admin-danger-zone" class="mt-12 pt-8 border-t border-slate-700 hidden">
+    <div class="flex justify-between items-center mb-8">
+        <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Área de Perigo (Admin)</h3>
+        <div class="flex gap-3">
+            <button id="btn-reset-db" class="px-4 py-2 bg-red-900/20 text-red-200 border border-red-800 rounded-lg text-xs font-bold hover:bg-red-900 transition">
+                Restaurar Padrões
+            </button>
+            <button id="btn-refresh-admin-list" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-500 transition shadow-lg flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Atualizar Tudo
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-end border-b border-slate-700 pb-4 mb-4 gap-4">
+            <h5 class="text-amber-400 text-sm font-bold uppercase flex items-center gap-2">
+                <span class="p-1 bg-amber-500/10 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></span>
+                Gestão de Divergências (RNC)
+            </h5>
+            <input type="text" id="admin-search-rnc" placeholder="🔍 Buscar por Embarque, NF ou Tipo..." class="bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-xs text-white focus:border-amber-500 outline-none w-full md:w-64 transition-all">
+        </div>
+        <div class="overflow-hidden rounded-lg border border-slate-700 max-h-60 overflow-y-auto bg-slate-900">
+            <table class="min-w-full text-xs text-left">
+                <thead class="bg-slate-950 text-slate-400 font-medium sticky top-0 z-10">
+                    <tr><th class="px-4 py-3">Data/Tipo</th><th class="px-4 py-3">Referência</th><th class="px-4 py-3 text-right">Ações</th></tr>
+                </thead>
+                <tbody id="admin-oc-list-tbody" class="divide-y divide-slate-800 text-indigo-400">
+                    <tr><td colspan="3" class="px-4 py-4 text-center text-slate-600 italic">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-end border-b border-slate-700 pb-4 mb-4 gap-4">
+            <h5 class="text-cyan-400 text-sm font-bold uppercase flex items-center gap-2">
+                <span class="p-1 bg-cyan-500/10 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg></span>
+                Solicitações de Etiquetas
+            </h5>
+            <input type="text" id="admin-search-label" placeholder="🔍 Buscar por Item ou Lote..." class="bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-xs text-white focus:border-cyan-500 outline-none w-full md:w-64 transition-all">
+        </div>
+        <div class="overflow-hidden rounded-lg border border-slate-700 max-h-60 overflow-y-auto bg-slate-900">
+            <table class="min-w-full text-xs text-left">
+                <thead class="bg-slate-950 text-slate-400 font-medium sticky top-0 z-10">
+                    <tr><th class="px-4 py-3">Data Solicitação</th><th class="px-4 py-3">Item / Detalhes</th><th class="px-4 py-3 text-right">Ações</th></tr>
+                </thead>
+                <tbody id="admin-label-list-tbody" class="divide-y divide-slate-800 text-indigo-400">
+                    <tr><td colspan="3" class="px-4 py-4 text-center text-slate-600 italic">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="admin-audit-section" class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg hidden">
+        <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-700 pb-4 mb-4 gap-4">
+            <h5 class="text-indigo-400 text-sm font-bold uppercase flex items-center gap-2">
+                <span class="p-1 bg-indigo-500/10 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></span>
+                Auditoria do Sistema
+            </h5>
+            
+            <div class="flex flex-wrap gap-2 items-center justify-end w-full md:w-auto">
+                <input type="date" id="audit-filter-start" class="bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs text-white focus:border-indigo-500 outline-none [color-scheme:dark]">
+                <span class="text-slate-500 text-xs">até</span>
+                <input type="date" id="audit-filter-end" class="bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs text-white focus:border-indigo-500 outline-none [color-scheme:dark]">
+                
+                <button id="btn-audit-filter" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    Filtrar
+                </button>
+                <button id="btn-audit-export" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded text-xs font-bold transition flex items-center gap-1" title="Exportar Excel">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Exportar
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-hidden rounded-lg border border-slate-700 max-h-80 overflow-y-auto bg-slate-900">
+            <table class="min-w-full text-xs text-left">
+                <thead class="bg-slate-950 text-slate-400 font-medium sticky top-0 z-10 shadow-md">
+                    <tr>
+                        <th class="px-4 py-3 border-b border-slate-800">Data/Hora</th>
+                        <th class="px-4 py-3 border-b border-slate-800">Usuário</th>
+                        <th class="px-4 py-3 border-b border-slate-800">Ação</th>
+                        <th class="px-4 py-3 border-b border-slate-800">Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody id="audit-list-tbody" class="divide-y divide-slate-800 text-slate-300">
+                    <tr><td colspan="4" class="px-4 py-8 text-center text-slate-600 italic">Carregando últimos 10 registros...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 text-right italic">* Exibindo os últimos 10 registros por padrão. Use os filtros para ver mais.</p>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="perfil" class="page-content hidden fade-in max-w-lg mx-auto">
+                    <header class="mb-8 text-center">
+                        <h1 class="text-3xl font-bold text-white">Minha Conta</h1>
+                        <p class="text-slate-300 mt-1">Gerencie suas credenciais de acesso.</p>
+                    </header>
+
+                    <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700 overflow-hidden">
+                        
+                        <div class="p-8 flex flex-col items-center border-b border-slate-700 bg-slate-800 relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500"></div>
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl"></div>
+
+                            <div class="bg-amber-500/10 p-4 rounded-full mb-4 ring-1 ring-amber-500/30">
+                                <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-white mb-2">Visto Eletrônico</h3>
+                            <p class="text-slate-400 text-sm text-center max-w-xs mb-6">Este PIN de 4 dígitos é sua assinatura digital para validar ocorrências presencialmente.</p>
+
+                            <div class="w-full max-w-[240px] relative group">
+                                <label class="block text-[10px] font-bold text-amber-500 uppercase mb-1 text-center tracking-widest">Seu PIN Atual</label>
+                                <input 
+                                    type="password" 
+                                    id="profile-pin" 
+                                    name="user_set_pin_visual_update" 
+                                    autocomplete="new-password" 
+                                    readonly 
+                                    onfocus="this.removeAttribute('readonly');"
+                                    maxlength="4" 
+                                    class="w-full bg-slate-900 border-2 border-slate-600 text-white text-3xl font-bold py-3 rounded-xl focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 outline-none transition-all text-center tracking-[0.5em] font-mono placeholder-slate-700 shadow-inner" 
+                                    placeholder="••••">
+                            </div>
+
+                            <button type="button" id="btn-save-pin" class="mt-6 bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-amber-900/20 transition-all active:scale-95 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Salvar PIN
+                            </button>
+                        </div>
+
+                        <div class="p-8 bg-slate-800/50">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="bg-indigo-500/10 p-2 rounded-lg">
+                                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-white">Senha de Login</h3>
+                                    <p class="text-xs text-slate-400">Credenciais para acessar o AppLog.</p>
+                                </div>
+                            </div>
+
+                            <form id="form-change-pass" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Senha Atual</label>
+                                    <input type="password" id="current-pass" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none transition" required placeholder="••••••">
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Nova Senha</label>
+                                        <input type="password" id="new-pass" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none transition" required placeholder="Mín 6 caracteres">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Confirmar</label>
+                                        <input type="password" id="confirm-new-pass" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none transition" required placeholder="Repita a nova senha">
+                                    </div>
+                                </div>
+
+                                <div class="pt-4">
+                                    <button type="submit" id="btn-save-pass" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-lg shadow-lg transition active:scale-95">
+                                        Atualizar Senha de Acesso
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-sm m-4 text-center border border-slate-700 transform scale-95 transition-transform duration-200" id="confirm-modal-panel">
+            <h2 id="confirm-title" class="text-xl font-bold mb-2 text-white">Tem certeza?</h2>
+            <p id="confirm-message" class="text-slate-400 mb-6 text-sm"></p>
+            <div class="flex justify-center gap-3">
+                <button id="confirm-btn-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-indigo-400 font-medium hover:bg-slate-700 transition w-24">Cancelar</button>
+                <button id="confirm-btn-yes" class="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 shadow-sm transition w-24">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="leader-auth-modal" class="fixed inset-0 bg-slate-950/90 flex items-center justify-center hidden z-[70] backdrop-blur-sm">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-sm border border-slate-700 text-center">
+            
+            <div class="mb-4">
+                <div class="bg-amber-600 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white">Autenticação de Liderança</h3>
+                <p class="text-xs text-slate-400">O Líder deve confirmar a validação presencialmente.</p>
+            </div>
+            
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">PIN de Segurança</label>
+                    <input 
+                        type="password" 
+                        id="auth-leader-pin" 
+                        name="leader_pin_verify_no_autofill" 
+                        autocomplete="new-password" 
+                        readonly 
+                        onfocus="this.removeAttribute('readonly');"
+                        class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-white focus:border-amber-500 outline-none font-mono tracking-widest text-center" 
+                        placeholder="****">
+                </div>
+            </div>
+
+            <button id="btn-call-leader-remote" class="w-full mt-4 bg-indigo-900/30 hover:bg-indigo-900/50 border border-indigo-500/30 text-indigo-300 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 group">
+                <span class="group-hover:animate-bounce">📢</span> Líder Distante? Chamar Agora
+            </button>
+
+            <div class="flex gap-3 mt-4 pt-4 border-t border-slate-700">
+                <button id="btn-cancel-leader-auth" class="flex-1 py-2.5 rounded-lg border border-slate-600 text-slate-400 hover:text-white hover:bg-slate-700 font-medium transition text-xs">Cancelar</button>
+                <button id="btn-confirm-leader-auth" class="flex-1 py-2.5 rounded-lg bg-amber-600 text-white font-bold hover:bg-amber-500 shadow-lg transition text-xs">Validar e Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="client-modal" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center hidden z-50 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl w-full max-w-md m-4 border border-slate-700 transform transition-all scale-95">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Novo Cliente</h2>
+                <button type="button" id="client-modal-close-x" class="text-slate-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form id="client-form">
+                <div class="mb-6">
+                    <label for="client-name" class="block text-sm font-medium text-indigo-400 mb-1.5">Nome da Empresa</label>
+                    <input type="text" id="client-name" class="block w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition" required>
+                </div>
+                <div class="flex justify-end gap-3 border-t border-slate-700 pt-4">
+                    <button type="button" id="client-modal-cancel" class="px-4 py-2 rounded-lg border border-slate-600 text-indigo-400 hover:bg-slate-700 font-medium transition">Cancelar</button>
+                    <button type="submit" id="client-modal-save" class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 shadow-sm transition">Criar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="login-modal" class="fixed inset-0 bg-slate-950/90 flex items-center justify-center hidden z-[60] backdrop-blur-sm">
+        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-700">
+            <div class="text-center mb-6">
+                <div class="bg-indigo-600 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Acesso Administrativo</h2>
+                <p class="text-slate-400 text-sm mt-1">Entre com suas credenciais</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1 uppercase">E-mail</label>
+                    <input type="email" id="login-email" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none transition" placeholder="" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1 uppercase">Senha</label>
+                    <input type="password" id="login-pass" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none transition" placeholder="" required>
+                </div>
+                <button type="submit" id="btn-perform-login" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg transition">Entrar</button>
+            </form>
+            <button id="btn-close-login" class="w-full mt-4 text-slate-500 hover:text-indigo-400 text-sm transition">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="tv-mode" class="page-content hidden fixed inset-0 z-[100] bg-slate-950 text-white overflow-hidden flex flex-col">
+        <div class="bg-slate-900 border-b border-slate-800 p-6 flex justify-between items-center shadow-2xl shrink-0">
+            <div class="flex items-center gap-4">
+                <div class="bg-rose-600 p-3 rounded-xl shadow-lg shadow-rose-900/20">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black tracking-tight text-white">MONITORAMENTO OPERACIONAL</h1>
+                    <p class="text-slate-400 text-lg">Visão Geral de Divergências</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-5xl font-mono font-bold text-white tracking-widest" id="tv-clock">00:00</div>
+                <div class="text-slate-400 text-sm uppercase font-bold tracking-wider mt-1" id="tv-date">...</div>
+            </div>
+        </div>
+
+        <div class="flex-1 p-6 overflow-hidden grid grid-cols-12 gap-6">
+            
+            <div class="col-span-12 lg:col-span-4 flex flex-col gap-6 h-full">
+                
+                <div class="grid grid-cols-2 gap-4 h-48 shrink-0">
+                    <div class="col-span-2 bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-2xl border border-indigo-500/30 shadow-xl relative overflow-hidden flex flex-col justify-center">
+                        <div class="absolute right-0 top-0 p-4 opacity-10"><svg class="w-24 h-24 text-indigo-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                        <h3 class="text-indigo-300 text-sm font-bold uppercase tracking-wider mb-1">Total Hoje</h3>
+                        <p class="text-7xl font-black text-white leading-none" id="tv-kpi-total">0</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 shrink-0">
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg">
+                        <h4 class="text-slate-500 text-xs font-bold uppercase">Mais Frequente</h4>
+                        <p class="text-2xl font-bold text-amber-400 mt-1 truncate" id="tv-kpi-type">-</p>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg">
+                        <h4 class="text-slate-500 text-xs font-bold uppercase">Último Reg.</h4>
+                        <p class="text-2xl font-bold text-emerald-400 mt-1 truncate" id="tv-kpi-last">-</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl flex-1 overflow-hidden flex flex-col min-h-0">
+                    <div class="bg-slate-800/50 p-3 border-b border-slate-700 shrink-0">
+                        <h3 class="font-bold text-white uppercase text-sm flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Feed em Tempo Real
+                        </h3>
+                    </div>
+                    <div class="flex-1 overflow-hidden relative">
+                        <table class="w-full text-left">
+                            <tbody id="tv-list-tbody" class="divide-y divide-slate-800">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-8 grid grid-cols-2 grid-rows-2 gap-6 h-full min-h-0">
+                
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative flex flex-col">
+                    <h4 class="text-slate-400 font-bold uppercase text-xs mb-2 shrink-0">Ocorrências por Tipo</h4>
+                    <div class="flex-1 relative w-full min-h-0">
+                        <canvas id="tvChartType"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative flex flex-col">
+                    <h4 class="text-slate-400 font-bold uppercase text-xs mb-2 shrink-0">Ocorrências por Local</h4>
+                    <div class="flex-1 relative w-full min-h-0">
+                        <canvas id="tvChartLocal"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative flex flex-col">
+                    <h4 class="text-slate-400 font-bold uppercase text-xs mb-2 shrink-0">Top 5 Causadores</h4>
+                    <div class="flex-1 relative w-full min-h-0">
+                        <canvas id="tvChartCausador"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl relative flex flex-col">
+                    <h4 class="text-slate-400 font-bold uppercase text-xs mb-2 shrink-0">Top 5 Identificadores</h4>
+                    <div class="flex-1 relative w-full min-h-0">
+                        <canvas id="tvChartIdentificador"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <button id="btn-exit-tv" class="absolute bottom-6 right-6 bg-slate-800/80 hover:bg-red-900/80 text-slate-500 hover:text-white p-3 rounded-full transition backdrop-blur-sm border border-slate-700 z-50 group">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">Sair</span>
+        </button>
+    </div>
+    <script type="module" src="./js/app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('PWA Registrado!', reg.scope))
+                    .catch(err => console.log('Falha PWA:', err));
+            });
+        }
+    </script>
+</body>
+</html>
