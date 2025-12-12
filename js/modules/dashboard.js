@@ -3,7 +3,9 @@
  * DESCRIÇÃO: Dashboard Operacional, Relatórios, Impressão e Modo TV (Wallboard).
  */
 import { safeBind, showToast, printDocument } from '../utils.js';
-import Chart from 'chart.js/auto'; // <--- ESTA LINHA É A SOLUÇÃO
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/auto/auto.js';
+
+// --- ESTADO GERAL ---
 
 // --- ESTADO GERAL ---
 let localAllData = [];
