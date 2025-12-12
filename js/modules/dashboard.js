@@ -3,7 +3,9 @@
  * DESCRIÇÃO: Dashboard Operacional, Relatórios, Impressão e Modo TV (Wallboard).
  */
 import { safeBind, showToast, printDocument } from '../utils.js';
-import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/auto/auto.js';
+// Usamos a versão UMD (que já contém todas as dependências) e pegamos a global window.Chart
+import 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+const Chart = window.Chart;
 
 // --- ESTADO GERAL ---
 
