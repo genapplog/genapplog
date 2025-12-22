@@ -74,7 +74,7 @@ function generateZplTemplate(dims, cdCode, cdInfo, nfKey, poNumber, currentBox, 
            `^CFA,30^FO310,${scaleY(860,len)}^FH^FDPedido de COMPRA:^FS` +
            `^BY2,3,${scaleY(100,len)}^FO380,${scaleY(740,len)}^BC,${scaleY(110,len)},,,,N^FH^FD${poNumber}^FS` +
            `^CFA,30^FO310,${scaleY(280,len)}^FH^FDNumero de caixas:^FS` +
-           `^CFA,${scaleY(100,len)}^FO400,${scaleY(120,len)},^A0B,${scaleY(100,len)},${scaleY(080,len)}^FB400,1,0,C,0^FH^FD${volumeStr}\\&^FS` +
+           `^CFA,${scaleY(100,len)}^FO400,${scaleY(120,len)},^A0B,${scaleY(100,len)},${scaleY(100,len)}^FB400,1,0,C,0^FH^FD${volumeStr}\\&^FS` +
            `^CFA,30^FO550,${scaleY(950,len)}^FH^FDNota fiscal:^FS` +
            `^BY2,3,${scaleY(130,len)}^FO620,${scaleY(80,len)}^BC,${scaleY(120,len)},,,,N^FH^FD${nfKey}^FS^XZ`; 
 }
